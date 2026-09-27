@@ -55,8 +55,8 @@ void Scene::createModels(int mode)
 		std::vector<float> squareData = {
 			-0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f, //   1
 			-0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f, //   2
-			0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f, //  3
-			0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f  //             4 
+			0.5f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f, //  3
+			0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 0.0f  //             4 
 		};
 		auto squareModel = std::make_unique<Model>(squareData, 4, GL_TRIANGLE_STRIP);
 		drawableObjects_.push_back(std::make_unique<DrawableObject>(*shaderPrograms_[2], std::move(squareModel)));

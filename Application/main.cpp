@@ -1,14 +1,23 @@
 #include "Application.h"
+#include <cstdlib>
+#include <exception>
+#include <iostream>
+
 int main(void)
 {
-	Application* app = new Application();
-	app->initialization(); //OpenGL inicialization
-
-	//Loading scene
-	app->createShaders();
-	//app->createModels(1); 
-	//app->createModels(2); 
-	app->createModels(3);
-	app->createModels(4);
-	app->run(); //Rendering 
+	try
+	{
+		Application app;
+		app.initialization();
+		app.createShaders();
+		
+		app.createModels(2);
+		//app.createModels(4);
+		return app.run();
+	}
+	catch (const std::exception& error)
+	{
+		std::cerr << "Application startup failed: " << error.what() << '\n';
+		return EXIT_FAILURE;
+	}
 }

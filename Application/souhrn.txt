@@ -1,0 +1,6 @@
+1. Splněno - použita knihovna GLAD, vytvořen vertex (basic.vert) a fragment shader a pomocí VBO+VAO vykreslený trojúhelník 
+2. Splněno - při smazání v blue.frag ";", konzole vypsala chybovou hlášku o syntaktické chybě odchycenou v main z důvodu selhání kompilace, odchycenou v Shader
+3. Splněno - trojúhelník byl rozšířen na čtverec s žlutou barvou (1,1,0)
+4. Splněno - kulička vykreslena red.frag fragment shaderem na pozici (0,0,0)
+5. Splněno - kulička byla posunuta o -0.8 na x pozici a suziSmooth s blue.frag fragment shaderem na (0.8,0,0)
+6. Splněno - načítání shaderů i knihoven pouze relativní cestou
