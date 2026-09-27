@@ -12,8 +12,8 @@ Transformation::Transformation()
       projection_(glm::perspective(
           glm::radians(45.0f),            // Zorný úhel 
           800.0f / 600.0f,                    //    acspect ratio
-          0.01f,                          // near plane
-          100.0f                          //   far plane
+          0.01f,                          
+          100.0f                          
       ))
 {
 }
@@ -21,14 +21,19 @@ Transformation::Transformation()
 void Transformation::update()
 {
 	rotationAngle_ += rotationDirection_ * 0.01f;
-	model_ = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, -0.5f, 0.0f));
+    model_ = glm::translate(glm::mat4(1.0f), position_);
 	model_ = glm::rotate(model_, rotationAngle_, glm::vec3(0.0f, 0.0f, 1.0f));
-	model_ = glm::translate(model_, glm::vec3(0.5f, 0.5f, 0.0f));
 }
 
 void Transformation::setRotationDirection(float direction)
 {
 	rotationDirection_ = direction;
+}
+
+void Transformation::setPosition(const glm::vec3& position)
+{
+    position_ = position;
+    model_ = glm::translate(glm::mat4(1.0f), position_);
 }
 
 const glm::mat4& Transformation::model() const { return model_; }

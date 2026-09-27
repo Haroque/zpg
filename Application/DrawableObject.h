@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include <glm/vec3.hpp>
+
 #include "Model.h"
 #include "Transformation.h"
 
@@ -15,6 +17,7 @@ public:
 
 	void update();
 	void setRotationDirection(float direction);
+	void setPosition(const glm::vec3& position);
 	void draw();
 
 	void setVisible(bool visible) { isVisible_ = visible; }

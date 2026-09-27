@@ -19,7 +19,7 @@ public:
 	void render();
 
 private:
-	std::unique_ptr<ShaderProgram> shaderProgram_;
+	std::vector<std::unique_ptr<ShaderProgram>> shaderPrograms_;
 	std::vector<std::unique_ptr<DrawableObject>> drawableObjects_;
 };
 

@@ -1,7 +1,8 @@
 #include "Model.h"
 
-Model::Model(const std::vector<float>& vertices, int vertexCount)
-    : vertexCount_(vertexCount) // Uložíme si počet vrcholů pro pozdější volání draw
+
+Model::Model(const std::vector<float>& vertices, int vertexCount, GLenum drawMode)
+    : vertexCount_(vertexCount), drawMode_(drawMode) // Uložíme si počet vrcholů pro pozdější volání draw
 {
     glGenBuffers(1, &vertexBufferObject_);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject_);
@@ -27,5 +28,5 @@ Model::~Model()
 void Model::draw() const
 {
 	glBindVertexArray(vertexArrayObject_);
-	glDrawArrays(GL_TRIANGLES, 0, vertexCount_);
+	glDrawArrays(drawMode_, 0, vertexCount_);
 }

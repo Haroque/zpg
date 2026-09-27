@@ -7,7 +7,7 @@
 class Model
 {
 public:
-	Model(const std::vector<float>& vertices, int vertexCount);
+	Model(const std::vector<float>& vertices, int vertexCount, GLenum drawMode);
     ~Model();
 
 	void draw() const;
@@ -16,4 +16,5 @@ private:
 	GLuint vertexArrayObject_ = 0;
 	GLuint vertexBufferObject_ = 0;
 	int vertexCount_;
+	GLenum drawMode_;
 };

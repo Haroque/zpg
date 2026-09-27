@@ -17,6 +17,11 @@ void DrawableObject::setRotationDirection(float direction)
 	transformation_.setRotationDirection(direction);
 }
 
+void DrawableObject::setPosition(const glm::vec3& position)
+{
+	transformation_.setPosition(position);
+}
+
 void DrawableObject::draw()
 {
 	shaderProgram_.use();
