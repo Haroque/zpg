@@ -18,4 +18,3 @@ public:
 private:
 	GLuint id_ = 0;
 };
-

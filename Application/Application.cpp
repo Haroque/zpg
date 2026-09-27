@@ -39,6 +39,8 @@ void Application::initialization()
 
     glfwMakeContextCurrent(window_);
     glfwSwapInterval(1);
+
+    //
     glfwSetWindowUserPointer(window_, this);
     glfwSetKeyCallback(window_, keyCallback);
     glfwSetWindowSizeCallback(window_, windowSizeCallback);
@@ -60,17 +62,20 @@ void Application::createShaders()
     scene_->createShaders();
 }
 
-void Application::createModels()
+void Application::createModels(int mode)
 {
     if (!scene_)
         scene_ = new Scene();
-    scene_->createModels();
+    scene_->createModels(mode);
 }
 
 int Application::run()
 {
     while (!glfwWindowShouldClose(window_))
     {
+        if (scene_)
+            scene_->update();
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         if (scene_)
             scene_->render();
@@ -80,18 +85,39 @@ int Application::run()
     return 0;
 }
 
+void Application::setRotationDirection(float direction)
+{
+    if (scene_)
+        scene_->setRotationDirection(direction);
+}
+
 void Application::errorCallback(int, const char* description)
 {
     fputs(description, stderr);
 }
 
-void Application::keyCallback(GLFWwindow* window, int, int, int action, int)
+void Application::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
+    printf("key callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
+
+    if (action == GLFW_PRESS || action == GLFW_REPEAT)
+    {
+        Application* application = static_cast<Application*>(glfwGetWindowUserPointer(window));
+    
+        if (key == GLFW_KEY_LEFT || key == GLFW_KEY_UP)
+        {
+            application->setRotationDirection(-1.0f);
+        }
+        else if (key == GLFW_KEY_RIGHT || key == GLFW_KEY_DOWN)
+        {
+            application->setRotationDirection(1.0f);
+        }
+    }
 }
 
 void Application::windowSizeCallback(GLFWwindow*, int width, int height)
 {
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, width, height); 
 }

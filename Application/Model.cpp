@@ -1,23 +1,21 @@
 #include "Model.h"
 
-Model::Model()
+Model::Model(const std::vector<float>& vertices, int vertexCount)
+    : vertexCount_(vertexCount) // Uložíme si počet vrcholů pro pozdější volání draw
 {
-	const float points[] = {
-		0.0f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
-	};
+    glGenBuffers(1, &vertexBufferObject_);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject_);
+    
+    // Místo statického sizeof(points) spočítáme dynamickou velikost vektoru v bajtech
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
-	glGenBuffers(1, &vertexBufferObject_);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject_);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
-
-	glGenVertexArrays(1, &vertexArrayObject_);
-	glBindVertexArray(vertexArrayObject_);
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glGenVertexArrays(1, &vertexArrayObject_);
+    glBindVertexArray(vertexArrayObject_);
+    
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 }
 
 Model::~Model()
@@ -29,5 +27,5 @@ Model::~Model()
 void Model::draw() const
 {
 	glBindVertexArray(vertexArrayObject_);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawArrays(GL_TRIANGLES, 0, vertexCount_);
 }

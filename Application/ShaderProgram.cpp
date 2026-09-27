@@ -1,7 +1,7 @@
 #include "ShaderProgram.h"
+#include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
-
 ShaderProgram::ShaderProgram(Shader vertexShader, Shader fragmentShader)
 	: vertexShader_(std::move(vertexShader)),
 	  fragmentShader_(std::move(fragmentShader))
@@ -42,3 +42,10 @@ ShaderProgram::~ShaderProgram()
 }
 
 void ShaderProgram::use() const { glUseProgram(id); }
+
+void ShaderProgram::setTransformation(const Transformation& transformation) const
+{
+	glUniformMatrix4fv(glGetUniformLocation(id, "model"), 1, GL_FALSE, glm::value_ptr(transformation.model()));
+	glUniformMatrix4fv(glGetUniformLocation(id, "view"), 1, GL_FALSE, glm::value_ptr(transformation.view()));
+	glUniformMatrix4fv(glGetUniformLocation(id, "projection"), 1, GL_FALSE, glm::value_ptr(transformation.projection()));
+}

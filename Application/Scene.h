@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 class DrawableObject;
 class ShaderProgram;
@@ -12,11 +13,13 @@ public:
 	~Scene();
 
 	void createShaders();
-	void createModels();
-	void render() const;
+	void createModels(int mode);
+	void update();
+	void setRotationDirection(float direction);
+	void render();
 
 private:
 	std::unique_ptr<ShaderProgram> shaderProgram_;
-	std::unique_ptr<DrawableObject> drawableObject_;
+	std::vector<std::unique_ptr<DrawableObject>> drawableObjects_;
 };
 

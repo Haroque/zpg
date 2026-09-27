@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iterator>
 #include <string>
+#include <sstream>
 
 Shader::Shader(GLenum type, const char* filePath)
 	: id_(glCreateShader(type))
@@ -12,11 +13,17 @@ Shader::Shader(GLenum type, const char* filePath)
 	if (!file.is_open())
 		throw std::runtime_error(std::string("Unable to open shader file: ") + filePath);
 
-	const std::string source(std::istreambuf_iterator<char>(file), {});
-	const char* sourcePointer = source.c_str();
-	glShaderSource(id_, 1, &sourcePointer, nullptr);
+	std::stringstream buffer;
+    buffer << file.rdbuf();
+    const std::string source = buffer.str();
+    const char* sourcePointer = source.c_str();
+
+	// Compile the shader source code,   but after making sure it exists
+	id_ = glCreateShader(type);
+    glShaderSource(id_, 1, &sourcePointer, nullptr);
 	glCompileShader(id_);
 
+	// Check specialization/compilation status
 	GLint success = GL_FALSE;
 	glGetShaderiv(id_, GL_COMPILE_STATUS, &success);
 	if (!success)

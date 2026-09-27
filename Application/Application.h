@@ -1,7 +1,5 @@
 #pragma once
-
 struct GLFWwindow;
-
 class Scene;
 
 class Application
@@ -15,8 +13,9 @@ public:
 
 	void initialization();
 	void createShaders();
-	void createModels();
+	void createModels(int mode);
 	int run();
+	void setRotationDirection(float direction);
 
 private:
 	static void errorCallback(int error, const char* description);
