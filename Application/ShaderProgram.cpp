@@ -41,7 +41,11 @@ ShaderProgram::~ShaderProgram()
 		glDeleteProgram(id);
 }
 
-void ShaderProgram::use() const { glUseProgram(id); }
+void ShaderProgram::use() const
+{ 
+	glUseProgram(id); 
+}
+
 
 void ShaderProgram::setTransformation(const Transformation& transformation) const
 {

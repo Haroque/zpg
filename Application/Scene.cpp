@@ -69,7 +69,7 @@ void Scene::createModels(int mode)
 		std::vector<float> suziData(suziSmooth, suziSmooth + sizeof(suziSmooth) / sizeof(float));
 		auto suziModel = std::make_unique<Model>(suziData, static_cast<int>(suziData.size() / 6), GL_TRIANGLES);
 		auto suziObject = std::make_unique<DrawableObject>(*shaderPrograms_[1], std::move(suziModel));
-		suziObject->setPosition(glm::vec3(0.8f, 0.0f, 0.0f));
+		suziObject->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 		drawableObjects_.push_back(std::move(suziObject));
 	}
 	else if(mode == 4)

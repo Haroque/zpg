@@ -3,6 +3,8 @@
 #include <memory>
 #include <vector>
 
+using namespace std;
+
 class DrawableObject;
 class ShaderProgram;
 
@@ -19,7 +21,8 @@ public:
 	void render();
 
 private:
-	std::vector<std::unique_ptr<ShaderProgram>> shaderPrograms_;
-	std::vector<std::unique_ptr<DrawableObject>> drawableObjects_;
+	vector<unique_ptr<ShaderProgram>> shaderPrograms_;
+	vector<unique_ptr<DrawableObject>> drawableObjects_;
+
 };
 

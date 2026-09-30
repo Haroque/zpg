@@ -29,4 +29,5 @@ void Model::draw() const
 {
 	glBindVertexArray(vertexArrayObject_);
 	glDrawArrays(drawMode_, 0, vertexCount_);
+	glBindVertexArray(0); // Odpojení VAO po vykreslení (volitelné, ale dobrá praxe)
 }

@@ -42,22 +42,5 @@ Shader::~Shader()
 		glDeleteShader(id_);
 }
 
-Shader::Shader(Shader&& other) noexcept
-	: id_(other.id_)
-{
-	other.id_ = 0;
-}
-
-Shader& Shader::operator=(Shader&& other) noexcept
-{
-	if (this != &other)
-	{
-		if (id_)
-			glDeleteShader(id_);
-		id_ = other.id_;
-		other.id_ = 0;
-	}
-	return *this;
-}
 
 GLuint Shader::id() const { return id_; }
