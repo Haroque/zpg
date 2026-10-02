@@ -3,7 +3,6 @@
 #include <glad/gl.h>
 
 #include "Shader.h"
-#include "Transformation.h"
 
 class ShaderProgram
 {
@@ -14,7 +13,6 @@ public:
 
 	bool setShaderProgram();
 	void use() const;
-	void setTransformation(const Transformation& transformation) const;
 
 private:
 	GLuint id = 0;

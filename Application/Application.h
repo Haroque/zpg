@@ -8,14 +8,12 @@ public:
 	Application();
 	~Application();
 
-	//Application(const Application&) = delete;
-	//Application& operator=(const Application&) = delete;
-
 	void initialization();
 	void createShaders();
 	void createModels(int mode);
 	int run();
-	void setRotationDirection(float direction);
+
+	void setRotationDirection(int direction);
 
 private:
 	static void errorCallback(int error, const char* description);

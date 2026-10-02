@@ -40,7 +40,7 @@ void Scene::createModels(int mode)
 {
 	if(mode == 1)
 	{
-		// 1. trojuhelnik
+		// 1. triangle with vertex colors
 		std::vector<float> triangleData = {
 			0.0f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
 			0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
@@ -51,7 +51,7 @@ void Scene::createModels(int mode)
 	}
 	else if(mode == 2)
 	{
-		// 3. Vytvoření čtverce se žlutým vrcholem
+		// 3. square with 4th vextex color (yellow) and using GL_TRIANGLE_STRIP
 		std::vector<float> squareData = {
 			-0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f, //   1
 			-0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f, //   2
@@ -91,7 +91,7 @@ void Scene::update()
         obj->update();
 }
 
-void Scene::setRotationDirection(float direction)
+void Scene::setRotationDirection(int direction)
 {
     for (auto& obj : drawableObjects_)
         obj->setRotationDirection(direction);

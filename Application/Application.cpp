@@ -1,10 +1,6 @@
-﻿
- //Include GLAD
- //Only define this in one file
-#define GLAD_GL_IMPLEMENTATION
+﻿#define GLAD_GL_IMPLEMENTATION  //Only define this in one file
 #include <glad/gl.h>
 
- //Include GLFW
 #include <GLFW/glfw3.h>
 
 //Include the standard C++ headers
@@ -40,7 +36,7 @@ void Application::initialization()
     glfwMakeContextCurrent(window_);
     glfwSwapInterval(1);
 
-    //
+    
     glfwSetWindowUserPointer(window_, this);
     glfwSetKeyCallback(window_, keyCallback);
     glfwSetWindowSizeCallback(window_, windowSizeCallback);
@@ -85,7 +81,7 @@ int Application::run()
     return 0;
 }
 
-void Application::setRotationDirection(float direction)
+void Application::setRotationDirection(int direction)
 {
     if (scene_)
         scene_->setRotationDirection(direction);

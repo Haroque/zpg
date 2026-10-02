@@ -17,7 +17,8 @@ public:
 	void createShaders();
 	void createModels(int mode);
 	void update();
-	void setRotationDirection(float direction);
+
+	void setRotationDirection(int direction);
 	void render();
 
 private:

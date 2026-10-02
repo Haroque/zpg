@@ -7,24 +7,24 @@ DrawableObject::DrawableObject(ShaderProgram& shaderProgram, std::unique_ptr<Mod
 {
 }
 
+
 void DrawableObject::update()
 {
-	transformation_.update();
+	//transformation_.update();
 }
 
-void DrawableObject::setRotationDirection(float direction)
+void DrawableObject::setRotationDirection(int direction)
 {
-	transformation_.setRotationDirection(direction);
+	//transformation_.setRotationDirection(direction);
 }
 
 void DrawableObject::setPosition(const glm::vec3& position)
 {
-	transformation_.setPosition(position);
+	//transformation_.setPosition(position);
 }
 
 void DrawableObject::draw()
 {
 	shaderProgram_.use();
-	shaderProgram_.setTransformation(transformation_);
 	model_->draw();
 }
