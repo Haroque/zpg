@@ -12,18 +12,21 @@ class ShaderProgram;
 class DrawableObject
 {
 public:
-	DrawableObject(ShaderProgram& shaderProgram, std::unique_ptr<Model> model);
+	DrawableObject(ShaderProgram& shaderProgram, Model& model);
 
+	void draw();
 	void update();
+
 	void setRotationDirection(int direction);
 	void setPosition(const glm::vec3& position);
-	void draw();
+	
 
-	void setVisible(bool visible) { isVisible_ = visible; }
-    bool isVisible() const { return isVisible_; }
 
 private:
 	ShaderProgram& shaderProgram_;
-	std::unique_ptr<Model> model_;
-	bool isVisible_ = true;
+	Model& model_;
+
+	int rotationDirection_ = 0; // 1 for clockwise, -1 for counter-clockwise, 0 for no rotation
+	float rotationAngle_ = 0.0f;
+	glm::vec3 position_ = glm::vec3(0.0f);
 };

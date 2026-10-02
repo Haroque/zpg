@@ -4,19 +4,22 @@
 Model::Model(const std::vector<float>& vertices, int vertexCount, GLenum drawMode)
 	: vertexCount_(vertexCount), drawMode_(drawMode) //  Saving the vertex count for later draw calls
 {
-    glGenBuffers(1, &vertexBufferObject_);
+
+    glGenVertexArrays(1, &vertexArrayObject_);//creating and bindind a vao
+    glBindVertexArray(vertexArrayObject_);
+
+    glGenBuffers(1, &vertexBufferObject_); 
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject_);
-    
-	//Instead of static sizeof(points), calculates the dynamic size of the vector in bytes
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
-    glGenVertexArrays(1, &vertexArrayObject_);
-    glBindVertexArray(vertexArrayObject_);
     
     glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
+
+    glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+
+	glBindVertexArray(0); 
 }
 
 Model::~Model()

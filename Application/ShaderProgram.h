@@ -14,6 +14,8 @@ public:
 	bool setShaderProgram();
 	void use() const;
 
+	GLuint getId() const { return id; }
+
 private:
 	GLuint id = 0;
 

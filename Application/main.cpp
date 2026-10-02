@@ -11,8 +11,9 @@ int main(void)
 		app.initialization();
 		app.createShaders();
 		
-		app.createModels(3);
-		//app.createModels(4);
+		//app.createModels(1);
+		app.createModels(4);
+
 		return app.run();
 	}
 	catch (const std::exception& error)

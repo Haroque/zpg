@@ -47,7 +47,7 @@ void Scene::createModels(int mode)
 			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
 		};
 		auto triangleModel = std::make_unique<Model>(triangleData, 3, GL_TRIANGLES);
-		drawableObjects_.push_back(std::make_unique<DrawableObject>(*shaderPrograms_[2], std::move(triangleModel)));
+		drawableObjects_.push_back(std::make_unique<DrawableObject>(*shaderPrograms_[2], *triangleModel));
 	}
 	else if(mode == 2)
 	{
@@ -59,7 +59,7 @@ void Scene::createModels(int mode)
 			0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 0.0f  //             4 
 		};
 		auto squareModel = std::make_unique<Model>(squareData, 4, GL_TRIANGLE_STRIP);
-		drawableObjects_.push_back(std::make_unique<DrawableObject>(*shaderPrograms_[2], std::move(squareModel)));
+		drawableObjects_.push_back(std::make_unique<DrawableObject>(*shaderPrograms_[2], *squareModel));
 	}
 	else if(mode == 3)
 	{
@@ -67,8 +67,9 @@ void Scene::createModels(int mode)
 			return;
 
 		std::vector<float> suziData(suziSmooth, suziSmooth + sizeof(suziSmooth) / sizeof(float));
-		auto suziModel = std::make_unique<Model>(suziData, static_cast<int>(suziData.size() / 6), GL_TRIANGLES);
-		auto suziObject = std::make_unique<DrawableObject>(*shaderPrograms_[1], std::move(suziModel));
+		static Model suziModel(suziData, static_cast<int>(suziData.size() / 6), GL_TRIANGLES);
+
+		auto suziObject = std::make_unique<DrawableObject>(*shaderPrograms_[1], suziModel);
 		suziObject->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 		drawableObjects_.push_back(std::move(suziObject));
 	}
@@ -77,9 +78,10 @@ void Scene::createModels(int mode)
 		if (shaderPrograms_.empty()) //sphere
 			return;
 
-		std::vector<float> sphereData(sphere, sphere + sizeof(sphere) / sizeof(float));
-		auto sphereModel = std::make_unique<Model>(sphereData, static_cast<int>(sphereData.size() / 6), GL_TRIANGLES);
-		auto sphereObject = std::make_unique<DrawableObject>(*shaderPrograms_[0], std::move(sphereModel));
+		static std::vector<float> sphereData(sphere, sphere + sizeof(sphere) / sizeof(float));
+		static Model sphereModel(sphereData, static_cast<int>(sphereData.size() / 6), GL_TRIANGLES);
+		
+		auto sphereObject = std::make_unique<DrawableObject>(*shaderPrograms_[0], sphereModel);
 		sphereObject->setPosition(glm::vec3(-0.8f, 0.0f, 0.0f));
 		drawableObjects_.push_back(std::move(sphereObject));
 	}
@@ -101,9 +103,6 @@ void Scene::render()
 {
 	for (auto& obj : drawableObjects_)
     {
-        if (obj->isVisible())
-        {
-            obj->draw();
-        }
+		obj->draw();
     }
 }
