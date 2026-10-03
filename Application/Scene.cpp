@@ -17,6 +17,8 @@
 #include "Models/sphere.h"
 #include "Models/suzi_smooth.h"
 #include "Models/login.h"
+#include "Models/tree.h"
+#include "Models/bushes.h"
 
 Scene::Scene() = default;
 
@@ -101,6 +103,40 @@ void Scene::createModels(int mode)
 		LoginObject->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 		drawableObjects_.push_back(std::move(LoginObject));
 	}
+	else if (mode == 6)
+	{
+		static std::vector<float> treeData(tree, tree + sizeof(tree) / sizeof(float));
+		static std::vector<float> bushData(bushes, bushes + sizeof(bushes) / sizeof(float));
+		static std::vector<float> sphereData(sphere, sphere + sizeof(sphere) / sizeof(float));
+		static Model treeModel(treeData, static_cast<int>(treeData.size() / 6), GL_TRIANGLES);
+		static Model bushModel(bushData, static_cast<int>(bushData.size() / 6), GL_TRIANGLES);
+		static Model sunModel(sphereData, static_cast<int>(sphereData.size() / 6), GL_TRIANGLES);
+
+		for (int i = 0; i < 12; ++i)
+		{
+			auto object = std::make_unique<DrawableObject>(*shaderPrograms_[1], treeModel);
+			object->setPosition(glm::vec3(-0.9f + (i % 4) * 0.6f, -0.2f + (i / 4) * 0.45f, 0.0f));
+			object->setScale(glm::vec3(0.18f));
+			drawableObjects_.push_back(std::move(object));
+		}
+		for (int i = 0; i < 12; ++i)
+		{
+			auto object = std::make_unique<DrawableObject>(*shaderPrograms_[0], bushModel);
+			object->setPosition(glm::vec3(-0.75f + (i % 4) * 0.5f, -0.65f + (i / 4) * 0.35f, 0.0f));
+			object->setScale(glm::vec3(0.12f));
+			drawableObjects_.push_back(std::move(object));
+		}
+
+		auto sun = std::make_unique<DrawableObject>(*shaderPrograms_[0], sunModel);
+		sun->setPosition(glm::vec3(0.75f, 0.7f, 0.0f));
+		sun->setScale(glm::vec3(0.12f));
+		drawableObjects_.push_back(std::move(sun));
+	}
+}
+
+void Scene::clearModels()
+{
+	drawableObjects_.clear();
 }
 
 void Scene::update()

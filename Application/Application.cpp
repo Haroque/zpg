@@ -68,6 +68,14 @@ void Application::createModels(int mode)
     scene_->createModels(mode);
 }
 
+void Application::setScene(int mode)
+{
+	if (!scene_)
+		return;
+	scene_->clearModels();
+	scene_->createModels(mode);
+}
+
 int Application::run()
 {
     while (!glfwWindowShouldClose(window_))
@@ -113,6 +121,10 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
         {
             application->setRotationDirection(1);
         }
+		/*else if (key==GLFW_KEY_1)
+		{
+			application->setScene(1);
+		}*/
     }
 }
 

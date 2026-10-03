@@ -22,6 +22,7 @@ public:
 
 	void createShaders();
 	void createModels(int mode);
+	void clearModels();
 	void update();
 
 	void setRotationDirection(int direction);
@@ -32,4 +33,3 @@ private:
 	vector<unique_ptr<DrawableObject>> drawableObjects_;
 
 };
-

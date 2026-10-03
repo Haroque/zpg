@@ -14,7 +14,7 @@
 #include <sstream>
 
 Shader::Shader(GLenum type, const char* filePath)
-	: id_(glCreateShader(type))
+	: id_(0)
 {
 	std::ifstream file(filePath);
 	if (!file.is_open())
@@ -48,6 +48,5 @@ Shader::~Shader()
 	if (id_)
 		glDeleteShader(id_);
 }
-
 
 GLuint Shader::id() const { return id_; }

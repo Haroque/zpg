@@ -18,8 +18,7 @@ int main(void)
 		app.initialization();
 		app.createShaders();
 		
-		//app.createModels(1);
-		app.createModels(5);
+		app.createModels(1);
 
 		return app.run();
 	}

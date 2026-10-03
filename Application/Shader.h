@@ -13,7 +13,6 @@ public:
 	Shader(GLenum type, const char* filePath);
 	~Shader();
 
-
 	GLuint id() const;
 
 private:

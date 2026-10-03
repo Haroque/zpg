@@ -30,31 +30,17 @@ void DrawableObject::setPosition(const glm::vec3& position)
 	position_ = position;
 }
 
-void DrawableObject::draw()
+void DrawableObject::setScale(const glm::vec3& scale)
+{
+	scale_ = scale;
+}
+
+void DrawableObject::draw() 
 {
 	shaderProgram_.use();
-	GLuint programId = shaderProgram_.getId();
-
-	// Translation uniform, 
-    GLint posLocation = glGetUniformLocation(programId, "uPosition");
-    if (posLocation != -1)
-    {
-        glUniform3f(posLocation, position_.x, position_.y, position_.z);
-    }
-
-	// Rotation uniform, without matrix
-    GLint rotLocation = glGetUniformLocation(programId, "uRotationAngle");
-    if (rotLocation != -1)
-    {
-        glUniform1f(rotLocation, rotationAngle_);
-    }
-
-	// Color uniform
-    GLint colorLocation = glGetUniformLocation(programId, "fragmentColor");
-    if (colorLocation != -1)
-    {
-        glUniform3f(colorLocation, 1.0f, 0.0f, 0.0f); // Červená barva
-    }
+	shaderProgram_.setUniform("Position", position_);
+	shaderProgram_.setUniform("Scale", scale_);
+	shaderProgram_.setUniform("Rotation", rotation_);
 
 	model_.draw();
 }

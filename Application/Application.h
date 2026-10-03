@@ -18,6 +18,7 @@ public:
 	void initialization();
 	void createShaders();
 	void createModels(int mode);
+	void setScene(int mode);
 	int run();
 
 	void setRotationDirection(int direction);

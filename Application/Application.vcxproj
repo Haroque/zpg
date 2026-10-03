@@ -153,6 +153,7 @@
   <ItemGroup>
     <None Include="basic.frag" />
     <None Include="basic.vert" />
+    <None Include="ClassDiagram.cd" />
     <None Include="shaders\red.frag" />
     <None Include="shaders\blue.frag" />
   </ItemGroup>

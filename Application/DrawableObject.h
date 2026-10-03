@@ -23,6 +23,7 @@ public:
 
 	void setRotationDirection(int direction);
 	void setPosition(const glm::vec3& position);
+	void setScale(const glm::vec3& scale);
 	
 
 
@@ -33,4 +34,5 @@ private:
 	int rotationDirection_ = 0; // 1 for clockwise, -1 for counter-clockwise, 0 for no rotation
 	float rotationAngle_ = 0.0f;
 	glm::vec3 position_ = glm::vec3(0.0f);
+	glm::vec3 scale_ = glm::vec3(1.0f);
 };
