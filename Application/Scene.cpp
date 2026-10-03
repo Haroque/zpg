@@ -1,3 +1,10 @@
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: Scene.cpp
+ * Description:  Implementation file for the Scene class
+ */
+
 #include "Scene.h"
 #include "DrawableObject.h"
 #include "Model.h"
@@ -5,11 +12,11 @@
 #include "ShaderProgram.h"
 
 #include <glad/gl.h>
-
 #include <iterator>
 
 #include "Models/sphere.h"
 #include "Models/suzi_smooth.h"
+#include "Models/login.h"
 
 Scene::Scene() = default;
 
@@ -17,19 +24,19 @@ Scene::~Scene() = default;
 
 void Scene::createShaders()
 {
-	// Index 0: Sphere (červená)
+	// Index 0: Sphere 
     Shader sphereVertexShader(GL_VERTEX_SHADER, "shaders/basic.vert");
     Shader sphereFragmentShader(GL_FRAGMENT_SHADER, "shaders/red.frag");
     shaderPrograms_.push_back(std::make_unique<ShaderProgram>(
         std::move(sphereVertexShader), std::move(sphereFragmentShader)));
 
-    // Index 1: Suzi (modrá)
+    // Index 1: Suzi 
     Shader suziVertexShader(GL_VERTEX_SHADER, "shaders/basic.vert");
     Shader suziFragmentShader(GL_FRAGMENT_SHADER, "shaders/blue.frag");
     shaderPrograms_.push_back(std::make_unique<ShaderProgram>(
         std::move(suziVertexShader), std::move(suziFragmentShader)));
 
-    // Index 2: Duhový (základní barvy z vrcholů pro trojúhelník a čtverec)
+	// Index 2: rainbow (basic colors from vertices for triangle and square)
     Shader rainbowVertexShader(GL_VERTEX_SHADER, "shaders/basic.vert");
     Shader rainbowFragmentShader(GL_FRAGMENT_SHADER, "shaders/basic.frag");
     shaderPrograms_.push_back(std::make_unique<ShaderProgram>(
@@ -84,6 +91,15 @@ void Scene::createModels(int mode)
 		auto sphereObject = std::make_unique<DrawableObject>(*shaderPrograms_[0], sphereModel);
 		sphereObject->setPosition(glm::vec3(-0.8f, 0.0f, 0.0f));
 		drawableObjects_.push_back(std::move(sphereObject));
+	}
+	else if (mode == 5)
+	{
+		static std::vector<float> LoginData(login, login + sizeof(login) / sizeof(float));
+		static Model LoginModel(LoginData, static_cast<int>(LoginData.size() / 6), GL_TRIANGLES);
+
+		auto LoginObject = std::make_unique<DrawableObject>(*shaderPrograms_[1], LoginModel);
+		LoginObject->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+		drawableObjects_.push_back(std::move(LoginObject));
 	}
 }
 

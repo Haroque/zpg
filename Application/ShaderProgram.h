@@ -1,7 +1,12 @@
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: ShaderProgram.h
+ * Description:  Header file for the ShaderProgram class
+ */
+
 #pragma once
-
 #include <glad/gl.h>
-
 #include "Shader.h"
 
 class ShaderProgram

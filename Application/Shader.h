@@ -1,5 +1,10 @@
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: Shader.h
+ * Description:  Header file for the Shader class
+ */
 #pragma once
-
 #include <glad/gl.h>
 
 class Shader

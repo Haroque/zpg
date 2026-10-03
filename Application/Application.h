@@ -1,3 +1,10 @@
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: Application.h
+ * Description:  Header file for the Applicatin class
+ */
+
 #pragma once
 struct GLFWwindow;
 class Scene;

@@ -1,3 +1,10 @@
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: DrawableObject.cpp
+ * Description:  Implementation file for the DrawableObject class
+ */
+
 #include "DrawableObject.h"
 #include "ShaderProgram.h"
 #include "Model.h"

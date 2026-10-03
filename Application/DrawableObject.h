@@ -1,9 +1,13 @@
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: DrawableObject.h
+ * Description:  Header file for the DrawableObject class
+ */
+
 #pragma once
-
 #include <memory>
-
 #include <glm/vec3.hpp>
-
 #include "Model.h"
 
 class ShaderProgram;

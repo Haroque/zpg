@@ -1,3 +1,10 @@
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: main.cpp
+ * Description:  Main application file for the Applicatin class
+ */
+
 #include "Application.h"
 #include <cstdlib>
 #include <exception>
@@ -12,7 +19,7 @@ int main(void)
 		app.createShaders();
 		
 		//app.createModels(1);
-		app.createModels(4);
+		app.createModels(5);
 
 		return app.run();
 	}

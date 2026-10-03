@@ -1,9 +1,12 @@
-﻿#define GLAD_GL_IMPLEMENTATION  //Only define this in one file
+﻿/*
+ * Antonin Harok HAR0199
+ *
+ * File: Application.cpp
+ * Description:  Implementation file for the Application class
+ */
+#define GLAD_GL_IMPLEMENTATION  //Only define this in one file
 #include <glad/gl.h>
-
 #include <GLFW/glfw3.h>
-
-//Include the standard C++ headers
 #include <stdlib.h>
 #include <stdio.h>
 

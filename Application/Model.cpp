@@ -1,3 +1,10 @@
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: Model.cpp
+ * Description:  Implementation file for the Model class
+ */
+
 #include "Model.h"
 
 

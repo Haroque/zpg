@@ -1,3 +1,10 @@
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: ShaderProgram.cpp
+ * Description:  Implementation file for the ShaderProgram class
+ */
+
 #include "ShaderProgram.h"
 #include <glm/gtc/type_ptr.hpp>
 

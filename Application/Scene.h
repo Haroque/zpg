@@ -1,5 +1,11 @@
-#pragma once
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: Scene.h
+ * Description:  Header file for the Scene class
+ */
 
+#pragma once
 #include <memory>
 #include <vector>
 

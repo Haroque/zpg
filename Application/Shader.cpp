@@ -1,3 +1,10 @@
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: Shader.cpp
+ * Description:  Implementation file for the Shader class
+ */
+
 #include "Shader.h"
 
 #include <fstream>
