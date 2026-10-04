@@ -121,10 +121,10 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
         {
             application->setRotationDirection(1);
         }
-		/*else if (key==GLFW_KEY_1)
+		else if (key >=GLFW_KEY_1 && key <= GLFW_KEY_6)
 		{
-			application->setScene(1);
-		}*/
+            application->setScene(key - GLFW_KEY_0);
+		}
     }
 }
 

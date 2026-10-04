@@ -10,14 +10,14 @@
 #include "Model.h"
 
 DrawableObject::DrawableObject(ShaderProgram& shaderProgram, Model& model)
-	: shaderProgram_(shaderProgram), model_(model), position_(0.0f), rotationAngle_(0.0f), rotationDirection_(0)
+	: shaderProgram_(shaderProgram), model_(model), translation_(0.0f), scale_(1.0f), rotation_(0.0f), rotationDirection_(0)
 {
 }
 
 
 void DrawableObject::update()
 {
-	rotationAngle_ += rotationDirection_ * 0.01f;
+	rotation_ += rotationDirection_ * 0.01f;
 }
 
 void DrawableObject::setRotationDirection(int direction)
@@ -25,9 +25,9 @@ void DrawableObject::setRotationDirection(int direction)
 	rotationDirection_ = direction;
 }
 
-void DrawableObject::setPosition(const glm::vec3& position)
+void DrawableObject::setTranslation(const glm::vec3& translation)
 {
-	position_ = position;
+	translation_ = translation;
 }
 
 void DrawableObject::setScale(const glm::vec3& scale)
@@ -38,7 +38,7 @@ void DrawableObject::setScale(const glm::vec3& scale)
 void DrawableObject::draw() 
 {
 	shaderProgram_.use();
-	shaderProgram_.setUniform("Position", position_);
+	shaderProgram_.setUniform("Translation", translation_);
 	shaderProgram_.setUniform("Scale", scale_);
 	shaderProgram_.setUniform("Rotation", rotation_);
 

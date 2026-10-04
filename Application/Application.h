@@ -17,7 +17,7 @@ public:
 
 	void initialization();
 	void createShaders();
-	void createModels(int mode);
+	void createModels(int mode=1);
 	void setScene(int mode);
 	int run();
 

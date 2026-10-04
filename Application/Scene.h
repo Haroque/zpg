@@ -21,7 +21,7 @@ public:
 	~Scene();
 
 	void createShaders();
-	void createModels(int mode);
+	void createModels(int mode = 1);
 	void clearModels();
 	void update();
 

@@ -23,14 +23,15 @@ public:
 	bool setShaderProgram();
 	void use() const;
 	
-	void setUniform(const std::string& name, float value) const;
-	void setUniform(const std::string& name, int value) const;
-	void setUniform(const std::string& name, const glm::vec3& value) const;
+	void setUniform(const GLchar* name, float value) const; //rotation
+	void setUniform(const GLchar* name, int value) const;
+	void setUniform(const GLchar* name, const glm::vec3& value) const;
 
+	GLint uniformLocation(const GLchar* name) const;
 	GLuint getId() const { return id; }
 
+
 private:
-	GLint uniformLocation(const std::string& name) const;
 	GLuint id = 0;
 
 	Shader vertexShader_;

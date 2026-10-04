@@ -12,19 +12,13 @@
 
 int main(void)
 {
-	try
-	{
-		Application app;
-		app.initialization();
-		app.createShaders();
-		
-		app.createModels(1);
 
-		return app.run();
-	}
-	catch (const std::exception& error)
-	{
-		std::cerr << "Application startup failed: " << error.what() << '\n';
-		return EXIT_FAILURE;
-	}
+	Application *app = new Application();
+	app->initialization();
+	app->createShaders();
+	
+	app->createModels();
+
+	return app->run();
+	
 }

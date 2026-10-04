@@ -55,8 +55,8 @@ void Scene::createModels(int mode)
 			0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
 			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
 		};
-		auto triangleModel = std::make_unique<Model>(triangleData, 3, GL_TRIANGLES);
-		drawableObjects_.push_back(std::make_unique<DrawableObject>(*shaderPrograms_[2], *triangleModel));
+		static Model triangleModel(triangleData, 3, GL_TRIANGLES);
+		drawableObjects_.push_back(std::make_unique<DrawableObject>(*shaderPrograms_[2], triangleModel));
 	}
 	else if(mode == 2)
 	{
@@ -67,8 +67,8 @@ void Scene::createModels(int mode)
 			0.5f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f, //  3
 			0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 0.0f  //             4 
 		};
-		auto squareModel = std::make_unique<Model>(squareData, 4, GL_TRIANGLE_STRIP);
-		drawableObjects_.push_back(std::make_unique<DrawableObject>(*shaderPrograms_[2], *squareModel));
+		static Model squareModel(squareData, 4, GL_TRIANGLE_STRIP);
+		drawableObjects_.push_back(std::make_unique<DrawableObject>(*shaderPrograms_[2], squareModel));
 	}
 	else if(mode == 3)
 	{
@@ -79,7 +79,7 @@ void Scene::createModels(int mode)
 		static Model suziModel(suziData, static_cast<int>(suziData.size() / 6), GL_TRIANGLES);
 
 		auto suziObject = std::make_unique<DrawableObject>(*shaderPrograms_[1], suziModel);
-		suziObject->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+		suziObject->setTranslation(glm::vec3(0.0f, 0.0f, 0.0f));
 		drawableObjects_.push_back(std::move(suziObject));
 	}
 	else if(mode == 4)
@@ -91,7 +91,7 @@ void Scene::createModels(int mode)
 		static Model sphereModel(sphereData, static_cast<int>(sphereData.size() / 6), GL_TRIANGLES);
 		
 		auto sphereObject = std::make_unique<DrawableObject>(*shaderPrograms_[0], sphereModel);
-		sphereObject->setPosition(glm::vec3(-0.8f, 0.0f, 0.0f));
+		sphereObject->setTranslation(glm::vec3(-0.8f, 0.0f, 0.0f));
 		drawableObjects_.push_back(std::move(sphereObject));
 	}
 	else if (mode == 5)
@@ -100,7 +100,7 @@ void Scene::createModels(int mode)
 		static Model LoginModel(LoginData, static_cast<int>(LoginData.size() / 6), GL_TRIANGLES);
 
 		auto LoginObject = std::make_unique<DrawableObject>(*shaderPrograms_[1], LoginModel);
-		LoginObject->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+		LoginObject->setTranslation(glm::vec3(0.0f, 0.0f, 0.0f));
 		drawableObjects_.push_back(std::move(LoginObject));
 	}
 	else if (mode == 6)
@@ -115,29 +115,31 @@ void Scene::createModels(int mode)
 		for (int i = 0; i < 12; ++i)
 		{
 			auto object = std::make_unique<DrawableObject>(*shaderPrograms_[1], treeModel);
-			object->setPosition(glm::vec3(-0.9f + (i % 4) * 0.6f, -0.2f + (i / 4) * 0.45f, 0.0f));
+			object->setTranslation(glm::vec3(-0.9f + (i % 4) * 0.6f, -0.2f + (i / 4) * 0.45f, 0.0f));
 			object->setScale(glm::vec3(0.18f));
 			drawableObjects_.push_back(std::move(object));
 		}
 		for (int i = 0; i < 12; ++i)
 		{
 			auto object = std::make_unique<DrawableObject>(*shaderPrograms_[0], bushModel);
-			object->setPosition(glm::vec3(-0.75f + (i % 4) * 0.5f, -0.65f + (i / 4) * 0.35f, 0.0f));
+			object->setTranslation(glm::vec3(-0.75f + (i % 4) * 0.5f, -0.65f + (i / 4) * 0.35f, 0.0f));
 			object->setScale(glm::vec3(0.12f));
 			drawableObjects_.push_back(std::move(object));
 		}
 
 		auto sun = std::make_unique<DrawableObject>(*shaderPrograms_[0], sunModel);
-		sun->setPosition(glm::vec3(0.75f, 0.7f, 0.0f));
+		sun->setTranslation(glm::vec3(0.75f, 0.7f, 0.0f));
 		sun->setScale(glm::vec3(0.12f));
 		drawableObjects_.push_back(std::move(sun));
 	}
 }
 
+
 void Scene::clearModels()
 {
 	drawableObjects_.clear();
 }
+
 
 void Scene::update()
 {

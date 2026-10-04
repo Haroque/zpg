@@ -53,3 +53,31 @@ void ShaderProgram::use() const
 	glUseProgram(id); 
 }
 
+GLint ShaderProgram::uniformLocation(const GLchar* name) const
+{
+	GLint location = glGetUniformLocation(id, name);
+	if (location == -1)
+		std::cerr << "Warning: uniform '" << name << "' not found in shader program.\n";
+	return location;
+}
+
+void ShaderProgram::setUniform(const GLchar* name, float value) const
+{
+	GLint location = uniformLocation(name);
+	if (location != -1)
+		glUniform1f(location, value);
+}
+
+void ShaderProgram::setUniform(const GLchar* name, int value) const
+{
+	GLint location = uniformLocation(name);
+	if (location != -1)
+		glUniform1i(location, value);
+}
+
+void ShaderProgram::setUniform(const GLchar* name, const glm::vec3& value) const
+{
+	GLint location = uniformLocation(name);
+	if (location != -1)
+		glUniform3fv(location, 1, glm::value_ptr(value));
+}
