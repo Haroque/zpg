@@ -9,6 +9,7 @@ class Scene
 class Application
 {
   -Scene* scene
+  -DrawableObject* drawableObject_
 }
  
 
@@ -46,6 +47,6 @@ Scene *-- "0..*" DrawableObject
 ShaderProgram *-- "2" Shader
 
 DrawableObject --> "1" ShaderProgram 
-DrawableObject --> "1" Model 
+DrawableObject --> "1" Model
 
 @enduml

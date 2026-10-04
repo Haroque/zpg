@@ -8,7 +8,6 @@
 #pragma once
 struct GLFWwindow;
 class Scene;
-class DrawableObject;
 
 class Application
 {
@@ -31,5 +30,4 @@ private:
 
 	GLFWwindow* window_ = nullptr;
 	Scene* scene_ = nullptr;
-	DrawableObject* drawableObject_ = nullptr;
 };

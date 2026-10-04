@@ -28,6 +28,8 @@ public:
 	void setRotationDirection(int direction);
 	void render();
 
+	void signature();
+
 private:
 	vector<unique_ptr<ShaderProgram>> shaderPrograms_;
 	vector<unique_ptr<DrawableObject>> drawableObjects_;
