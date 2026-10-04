@@ -42,7 +42,6 @@
     <None Include="basic.vert" />
     <None Include="shaders\red.frag" />
     <None Include="shaders\blue.frag" />
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">

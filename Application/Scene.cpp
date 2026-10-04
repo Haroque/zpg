@@ -94,7 +94,7 @@ void Scene::createModels(int mode)
 		sphereObject->setTranslation(glm::vec3(-0.8f, 0.0f, 0.0f));
 		drawableObjects_.push_back(std::move(sphereObject));
 	}
-	else if (mode == 5)
+	else if (mode == 5) //login
 	{
 		static std::vector<float> LoginData(login, login + sizeof(login) / sizeof(float));
 		static Model LoginModel(LoginData, static_cast<int>(LoginData.size() / 6), GL_TRIANGLES);

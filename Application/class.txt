@@ -1,0 +1,51 @@
+@startuml
+
+class Scene
+{
+  -vector<unique_ptr<ShaderProgram>> shaderPrograms_
+  -vector<unique_ptr<DrawableObject>> drawableObjects_
+}
+
+class Application
+{
+  -Scene* scene
+}
+ 
+
+class DrawableObject
+{
+  -ShaderProgram& shaderProgram_
+  -Model& model_
+  -int rotationDirection_ 
+  -float rotation_ 
+  -vec3 translation_ 
+  -vec3 scale_ 
+}
+
+class ShaderProgram
+{
+  -Shader vertexShader_
+  -Shader fragmentShader_
+}
+
+class Model
+{
+  -GLuint vertexArrayObject_
+  -GLuint vertexBufferObject_
+  -int vertexCount_
+}
+
+class Shader
+{
+  -GLuint id_
+}
+
+Application *-- "1" Scene 
+Scene *-- "0..*" ShaderProgram 
+Scene *-- "0..*" DrawableObject 
+ShaderProgram *-- "2" Shader
+
+DrawableObject --> "1" ShaderProgram 
+DrawableObject --> "1" Model 
+
+@enduml

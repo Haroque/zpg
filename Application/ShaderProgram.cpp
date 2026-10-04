@@ -57,7 +57,7 @@ GLint ShaderProgram::uniformLocation(const GLchar* name) const
 {
 	GLint location = glGetUniformLocation(id, name);
 	if (location == -1)
-		std::cerr << "Warning: uniform '" << name << "' not found in shader program.\n";
+		std::cerr << "Uniform '" << name << "' not found in ShaderProgram.\n";
 	return location;
 }
 
