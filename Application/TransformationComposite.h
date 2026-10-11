@@ -12,7 +12,6 @@ public:
 	void update() override;
 	void setRotationDirection(int direction) override;
 
-
 private:
 	std::vector<std::shared_ptr<Transformation>> transformations_;
 };

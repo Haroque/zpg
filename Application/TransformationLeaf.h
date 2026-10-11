@@ -9,14 +9,21 @@ public:
 	virtual void update() override {}
 };
 
+
+
 class Translate : public TransformationLeaf
 {
 private:
 	glm::vec3 translation_;
+	
 public:
 	Translate(const glm::vec3& translation) : translation_(translation) {}
 	glm::mat4 getMatrix() override;
+	
 };
+
+
+
 
 class Rotate : public TransformationLeaf
 {
@@ -32,6 +39,8 @@ public:
 	glm::mat4 getMatrix() override;
 	void setRotationDirection(int direction) override { direction_ = direction; }
 };
+
+
 
 class Scale : public TransformationLeaf
 {

@@ -1,7 +1,11 @@
-1. 
-2
-3
-4.
-5.
-6.
+1. Splněno - V ShaderProgramu nový setUniform pro matici, matice se netransponuje.
+2. Splněno - Díky kompozit matice se nyní přenásobují -> odstranění ruční výpočty s goniometrickými funkcemi v vertex shaderu
+3. 
+4. Splněno - 
+    a) Posun/Rotace => první rotace, točí se kolem svého středu, pak se posune o 0.5 doprava, rotuje na místě
+    b) Rotace/Posun => nejdříve se objekt začne otáčet pak se posune o danou délku, stále rotuje, ale tentokrát po kružnici
+    Protože násobení matic není komutativní
+5. Splněno - Tvořeno komponentou (Transformation), která se stala abstraktní třídou a dědí z něj Composite a Leaf jako třídy pro translaci, rotaci a scale.
+    Composite slouží tak jako "obal" jednotlivých transormací.
+6. Splněno - pomocí fce rand() byla vygenerováná náhodná pozice od 0 do 199, velikost od 0.1 do 0.2. Používá se Composite a transformace se na sebe skládají.
 7.

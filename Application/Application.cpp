@@ -113,11 +113,11 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
     {
         Application* application = static_cast<Application*>(glfwGetWindowUserPointer(window));
     
-        if (key == GLFW_KEY_LEFT || key == GLFW_KEY_UP)
+        if (key == GLFW_KEY_UP)
         {
             application->setRotationDirection(-1);
         }
-        else if (key == GLFW_KEY_RIGHT || key == GLFW_KEY_DOWN)
+        else if (key == GLFW_KEY_DOWN)
         {
             application->setRotationDirection(1);
         }

@@ -82,6 +82,8 @@ void ShaderProgram::setUniform(const GLchar* name, const glm::vec3& value) const
 		glUniform3fv(location, 1, glm::value_ptr(value));
 }
 
+//new uniform function without transponing the matrix
+// glm::value_ptr returns a pointer to the first element of the matrix in columns
 void ShaderProgram::setUniform(const GLchar* name, const glm::mat4 matrix) const
 {
 	GLint location = uniformLocation(name);
