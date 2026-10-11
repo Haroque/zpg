@@ -36,3 +36,9 @@ void DrawableObject::draw()
 
 	model_.draw();
 }
+void DrawableObject::setRotationDirection(int direction)
+{
+	if (transformation_) {
+		transformation_->setRotationDirection(direction);
+	}
+}

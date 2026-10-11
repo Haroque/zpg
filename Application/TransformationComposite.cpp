@@ -2,7 +2,7 @@
 #include <memory>
 #include "TransformationComposite.h"
 
-void TransformationComposite::addTransformation(std::unique_ptr<Transformation> transformation)
+void TransformationComposite::addTransformation(std::shared_ptr<Transformation> transformation)
 {
 	transformations_.push_back(transformation);
 }
@@ -23,4 +23,12 @@ glm::mat4 TransformationComposite::getMatrix()
 		result = result * transformation->getMatrix();
 	}
 	return result;
+}
+
+void TransformationComposite::setRotationDirection(int direction)
+{
+	for (auto& transformation : transformations_)
+	{
+		transformation->setRotationDirection(direction);
+	}
 }

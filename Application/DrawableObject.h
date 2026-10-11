@@ -22,7 +22,7 @@ public:
 	void draw();
 	void update();
 
-
+	void setRotationDirection(int direction);
 	void setTransformation(std::shared_ptr<Transformation> transformation) { transformation_ = transformation; }
 
 

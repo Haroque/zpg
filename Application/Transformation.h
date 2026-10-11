@@ -15,4 +15,6 @@ public:
 	virtual ~Transformation() = default;
 	virtual glm::mat4 getMatrix() = 0;
 	virtual void update() {}
+
+	virtual void setRotationDirection(int direction) {}
 };

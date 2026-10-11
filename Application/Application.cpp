@@ -76,6 +76,12 @@ void Application::setScene(int mode)
 	scene_->createModels(mode);
 }
 
+void Application::setRotationDirection(int direction)
+{
+    if (scene_)
+        scene_->setRotationDirection(direction);
+}
+
 int Application::run()
 {
     while (!glfwWindowShouldClose(window_))
@@ -90,12 +96,6 @@ int Application::run()
         glfwPollEvents();
     }
     return 0;
-}
-
-void Application::setRotationDirection(int direction)
-{
-    if (scene_)
-        scene_->setRotationDirection(direction);
 }
 
 void Application::errorCallback(int, const char* description)

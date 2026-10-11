@@ -81,10 +81,12 @@ void Scene::createModels(int mode)
 		static Model sphereModel(sphereData, static_cast<int>(sphereData.size() / 6), GL_TRIANGLES);
 
 		auto sphereObject = std::make_unique<DrawableObject>(*shaderPrograms_[0], sphereModel);
-		sphereObject->setTranslation(glm::vec3(0.0f, 0.0f, 0.0f));
-		sphereObject->setScale(glm::vec3(0.5f));
-		drawableObjects_.push_back(std::move(sphereObject));
+		auto composite = std::make_shared<TransformationComposite>();
+		composite->addTransformation(std::make_shared<Translate>(glm::vec3(0.0f, 0.0f, 0.0f)));
+		composite->addTransformation(std::make_shared<Scale>(glm::vec3(0.5f)));
+		sphereObject->setTransformation(composite);
 
+		drawableObjects_.push_back(std::move(sphereObject));
 		signature();
 	}
 	else if(mode == 3)
@@ -101,23 +103,29 @@ void Scene::createModels(int mode)
 
 		for (int i = 0; i < 12; ++i)
 		{
-			auto tree = std::make_unique<DrawableObject>(*shaderPrograms_[1], treeModel);
-			tree->setTranslation(glm::vec3(-0.8f + (i % 4) * 0.45f, 0.2f - (i / 4) * 0.4f, 0.0f));
-			tree->setScale(glm::vec3(0.07f));
-			drawableObjects_.push_back(std::move(tree));
+			auto treeObj = std::make_unique<DrawableObject>(*shaderPrograms_[1], treeModel);
+			auto trans = std::make_shared<TransformationComposite>();
+			trans->addTransformation(std::make_shared<Translate>(glm::vec3(-0.8f + (i % 4) * 0.45f, 0.2f - (i / 4) * 0.4f, 0.0f)));
+			trans->addTransformation(std::make_shared<Scale>(glm::vec3(0.07f)));
+			treeObj->setTransformation(trans);
+			drawableObjects_.push_back(std::move(treeObj));
 		}
 		for (int i = 0; i < 12; ++i)
 		{
-			auto bush = std::make_unique<DrawableObject>(*shaderPrograms_[0], bushModel);
-			bush->setTranslation(glm::vec3(-0.6f + (i % 4) * 0.45f, 0.1f - (i / 4) * 0.4f, 0.0f));
-			bush->setScale(glm::vec3(0.12f));
-			drawableObjects_.push_back(std::move(bush));
+			auto bushObj = std::make_unique<DrawableObject>(*shaderPrograms_[0], bushModel);
+			auto trans = std::make_shared<TransformationComposite>();
+			trans->addTransformation(std::make_shared<Translate>(glm::vec3(-0.6f + (i % 4) * 0.45f, 0.1f - (i / 4) * 0.4f, 0.0f)));
+			trans->addTransformation(std::make_shared<Scale>(glm::vec3(0.12f)));
+			bushObj->setTransformation(trans);
+			drawableObjects_.push_back(std::move(bushObj));
 		}
 
-		auto sun = std::make_unique<DrawableObject>(*shaderPrograms_[0], sunModel);
-		sun->setTranslation(glm::vec3(0.75f, 0.7f, 0.0f));
-		sun->setScale(glm::vec3(0.12f));
-		drawableObjects_.push_back(std::move(sun));
+		auto sunObj = std::make_unique<DrawableObject>(*shaderPrograms_[0], sunModel);
+		auto sunTrans = std::make_shared<TransformationComposite>();
+		sunTrans->addTransformation(std::make_shared<Translate>(glm::vec3(0.75f, 0.7f, 0.0f)));
+		sunTrans->addTransformation(std::make_shared<Scale>(glm::vec3(0.12f)));
+		sunObj->setTransformation(sunTrans);
+		drawableObjects_.push_back(std::move(sunObj));
 
 		signature();
 
@@ -128,7 +136,7 @@ void Scene::createModels(int mode)
 		static Model LoginModel(LoginData, static_cast<int>(LoginData.size() / 6), GL_TRIANGLES);
 
 		auto LoginObject = std::make_unique<DrawableObject>(*shaderPrograms_[1], LoginModel);
-		LoginObject->setTranslation(glm::vec3(0.0f, 0.0f, 0.0f));
+		LoginObject->setTransformation(std::make_shared<Translate>(glm::vec3(0.0f, 0.0f, 0.0f)));
 		drawableObjects_.push_back(std::move(LoginObject));
 	}
 	else if (mode == 5) 
@@ -164,9 +172,7 @@ void Scene::createModels(int mode)
 		static Model moonModel(moonData, static_cast<int>(moonData.size() / 6), GL_TRIANGLES);
 
 		auto moonObject = std::make_unique<DrawableObject>(*shaderPrograms_[2], moonModel);
-		//moonObject->setRotationDirection(glm::vec3(0.0f, 0.1f, 0.0f);
-		moonObject->setTranslation(glm::vec3(0.0f, 0.1f, 0.0f));
-
+		moonObject->setTransformation(std::make_shared<Translate>(glm::vec3(0.0f, 0.1f, 0.0f)));
 		drawableObjects_.push_back(std::move(moonObject));
 
 		/*
@@ -185,8 +191,12 @@ void Scene::signature()
 	static Model LoginModel(LoginData, static_cast<int>(LoginData.size() / 6), GL_TRIANGLES);
 
 	auto LoginObject = std::make_unique<DrawableObject>(*shaderPrograms_[1], LoginModel);
-	LoginObject->setTranslation(glm::vec3(0.5f, -0.8f, 0.0f));
-	LoginObject->setScale(glm::vec3(0.1f));
+
+	auto composite = std::make_shared<TransformationComposite>();
+	composite->addTransformation(std::make_shared<Translate>(glm::vec3(0.5f, -0.8f, 0.0f)));
+	composite->addTransformation(std::make_shared<Scale>(glm::vec3(0.1f)));
+	LoginObject->setTransformation(composite);
+
 	drawableObjects_.push_back(std::move(LoginObject));
 }
 
@@ -205,8 +215,8 @@ void Scene::update()
 
 void Scene::setRotationDirection(int direction)
 {
-    for (auto& obj : drawableObjects_)
-        obj->setRotationDirection(direction);
+	for (auto& obj : drawableObjects_)
+		obj->setRotationDirection(direction);
 }
 
 void Scene::render()
