@@ -19,12 +19,12 @@ Model::Model(const std::vector<float>& vertices, int vertexCount, GLenum drawMod
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject_);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
-    
+    // vertices.size() / vertexCount => there could be models with colors, later textures etc.
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (vertices.size() / vertexCount) * sizeof(float), nullptr);
 
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (vertices.size() / vertexCount) * sizeof(float), (void*)(3 * sizeof(float)));
 
 	glBindVertexArray(0); 
 }
