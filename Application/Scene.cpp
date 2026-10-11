@@ -11,6 +11,9 @@
 #include "Shader.h"
 #include "ShaderProgram.h"
 
+#include "TransformationComposite.h"
+#include "TransformationLeaf.h"
+
 #include <glad/gl.h>
 #include <iterator>
 
@@ -19,6 +22,9 @@
 #include "Models/login.h"
 #include "Models/tree.h"
 #include "Models/bushes.h"
+#include "Models/moon.h"
+#include "Models/sun.h"
+#include "Models/earth.h"
 
 Scene::Scene() = default;
 
@@ -56,8 +62,14 @@ void Scene::createModels(int mode)
 			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
 		};
 		static Model triangleModel(triangleData, 3, GL_TRIANGLES);
-		drawableObjects_.push_back(std::make_unique<DrawableObject>(*shaderPrograms_[2], triangleModel));
+		auto triangle = std::make_unique<DrawableObject>(*shaderPrograms_[2], triangleModel);
+		auto composite = std::make_shared<TransformationComposite>();
+		
+		composite->addTransformation(std::make_shared<Translate>(glm::vec3(0.5f, 0.0f, 0.0f)));
+		composite->addTransformation(std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 0.0f, 1.0f), 0.02f));
 
+		triangle->setTransformation(composite);
+		drawableObjects_.push_back(std::move(triangle));
 		signature();
 	}
 	else if(mode == 2)
@@ -102,9 +114,6 @@ void Scene::createModels(int mode)
 			drawableObjects_.push_back(std::move(bush));
 		}
 
-		//---------------------------------------------------------------------------
-		//---------------------------------------------------------------------------
-
 		auto sun = std::make_unique<DrawableObject>(*shaderPrograms_[0], sunModel);
 		sun->setTranslation(glm::vec3(0.75f, 0.7f, 0.0f));
 		sun->setScale(glm::vec3(0.12f));
@@ -135,7 +144,8 @@ void Scene::createModels(int mode)
 		drawableObjects_.push_back(std::make_unique<DrawableObject>(*shaderPrograms_[2], squareModel));
 		signature();
 	}
-	else if (mode == 6)
+	/*
+	else if (mode == )
 	{
 		if (shaderPrograms_.size() < 2) //suzi
 			return;
@@ -143,10 +153,29 @@ void Scene::createModels(int mode)
 		std::vector<float> suziData(suziSmooth, suziSmooth + sizeof(suziSmooth) / sizeof(float));
 		static Model suziModel(suziData, static_cast<int>(suziData.size() / 6), GL_TRIANGLES);
 
-		auto suziObject = std::make_unique<DrawableObject>(*shaderPrograms_[1], suziModel);
-		suziObject->setTranslation(glm::vec3(0.0f, 0.0f, 0.0f));
+		auto suziObject = std::make_unique<DrawableObject>(*shaderPrograms_[2], suziModel);
+		suziObject->setTranslation(glm::vec3(0.0f, 0.1f, 0.0f));
 		drawableObjects_.push_back(std::move(suziObject));
 		signature();
+	}*/
+	else if (mode == 6)
+	{
+		std::vector<float> moonData(moon, moon + sizeof(moon) / sizeof(float));
+		static Model moonModel(moonData, static_cast<int>(moonData.size() / 6), GL_TRIANGLES);
+
+		auto moonObject = std::make_unique<DrawableObject>(*shaderPrograms_[2], moonModel);
+		//moonObject->setRotationDirection(glm::vec3(0.0f, 0.1f, 0.0f);
+		moonObject->setTranslation(glm::vec3(0.0f, 0.1f, 0.0f));
+
+		drawableObjects_.push_back(std::move(moonObject));
+
+		/*
+		std::vector<float> sunData(sun, sun + sizeof(sun) / sizeof(float));
+		static Model sunModel(sunData, static_cast<int>(sunData.size() / 6), GL_TRIANGLES);
+		auto sunObject = std::make_unique<DrawableObject>(*shaderPrograms_[2], sunModel);
+		//moonObject->setRotationDirection(glm::vec3(0.0f, 0.1f, 0.0f);
+		sunObject->setTranslation(glm::vec3(0.0f, 0.1f, 0.0f));
+		drawableObjects_.push_back(std::move(sunObject));*/
 	}
 }
 
@@ -160,6 +189,7 @@ void Scene::signature()
 	LoginObject->setScale(glm::vec3(0.1f));
 	drawableObjects_.push_back(std::move(LoginObject));
 }
+
 
 void Scene::clearModels()
 {

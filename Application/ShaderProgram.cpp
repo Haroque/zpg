@@ -81,3 +81,10 @@ void ShaderProgram::setUniform(const GLchar* name, const glm::vec3& value) const
 	if (location != -1)
 		glUniform3fv(location, 1, glm::value_ptr(value));
 }
+
+void ShaderProgram::setUniform(const GLchar* name, const glm::mat4 matrix) const
+{
+	GLint location = uniformLocation(name);
+	if (location != -1)
+		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+}

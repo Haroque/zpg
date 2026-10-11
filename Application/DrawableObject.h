@@ -9,6 +9,7 @@
 #include <memory>
 #include <glm/vec3.hpp>
 #include "Model.h"
+#include "Transformation.h"
 
 class ShaderProgram;
 
@@ -17,23 +18,18 @@ class DrawableObject
 {
 public:
 	DrawableObject(ShaderProgram& shaderProgram, Model& model);
-
+	
 	void draw();
 	void update();
 
-	void setRotationDirection(int direction);
-	void setTranslation(const glm::vec3& translation);
-	void setScale(const glm::vec3& scale);
-	
+
+	void setTransformation(std::shared_ptr<Transformation> transformation) { transformation_ = transformation; }
 
 
 private:
 	ShaderProgram& shaderProgram_;
 	Model& model_;
 
-	int rotationDirection_ = 0; // 1 for clockwise, -1 for counter-clockwise, 0 for no rotation
-	
-	float rotation_ = 0.0f;
-	glm::vec3 translation_ = glm::vec3(0.0f);
-	glm::vec3 scale_ = glm::vec3(1.0f);
+	std::shared_ptr<Transformation> transformation_ = nullptr;
+
 };

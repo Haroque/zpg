@@ -10,37 +10,29 @@
 #include "Model.h"
 
 DrawableObject::DrawableObject(ShaderProgram& shaderProgram, Model& model)
-	: shaderProgram_(shaderProgram), model_(model), translation_(0.0f), scale_(1.0f), rotation_(0.0f), rotationDirection_(0)
+	: shaderProgram_(shaderProgram), model_(model)
 {
 }
 
 
 void DrawableObject::update()
 {
-	rotation_ += rotationDirection_ * 0.01f;
+	if (transformation_) {
+		transformation_->update();
+	}
 }
 
-void DrawableObject::setRotationDirection(int direction)
-{
-	rotationDirection_ = direction;
-}
-
-void DrawableObject::setTranslation(const glm::vec3& translation)
-{
-	translation_ = translation;
-}
-
-void DrawableObject::setScale(const glm::vec3& scale)
-{
-	scale_ = scale;
-}
 
 void DrawableObject::draw() 
 {
 	shaderProgram_.use();
-	shaderProgram_.setUniform("Translation", translation_);
-	shaderProgram_.setUniform("Scale", scale_);
-	shaderProgram_.setUniform("Rotation", rotation_);
+	glm::mat4 modelMatrix= glm::mat4(1.0f);
+
+	if (transformation_) {
+		modelMatrix = transformation_->getMatrix();
+	}
+
+	shaderProgram_.setUniform("modelMatrix", modelMatrix);
 
 	model_.draw();
 }
