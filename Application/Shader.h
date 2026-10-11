@@ -1,5 +1,10 @@
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: Shader.h
+ * Description:  Header file for the Shader class
+ */
 #pragma once
-
 #include <glad/gl.h>
 
 class Shader
@@ -7,11 +12,6 @@ class Shader
 public:
 	Shader(GLenum type, const char* filePath);
 	~Shader();
-
-	Shader(const Shader&) = delete;
-	Shader& operator=(const Shader&) = delete;
-	Shader(Shader&& other) noexcept;
-	Shader& operator=(Shader&& other) noexcept;
 
 	GLuint id() const;
 

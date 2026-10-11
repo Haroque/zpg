@@ -1,3 +1,10 @@
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: Shader.cpp
+ * Description:  Implementation file for the Shader class
+ */
+
 #include "Shader.h"
 
 #include <fstream>
@@ -7,7 +14,7 @@
 #include <sstream>
 
 Shader::Shader(GLenum type, const char* filePath)
-	: id_(glCreateShader(type))
+	: id_(0)
 {
 	std::ifstream file(filePath);
 	if (!file.is_open())
@@ -40,24 +47,6 @@ Shader::~Shader()
 {
 	if (id_)
 		glDeleteShader(id_);
-}
-
-Shader::Shader(Shader&& other) noexcept
-	: id_(other.id_)
-{
-	other.id_ = 0;
-}
-
-Shader& Shader::operator=(Shader&& other) noexcept
-{
-	if (this != &other)
-	{
-		if (id_)
-			glDeleteShader(id_);
-		id_ = other.id_;
-		other.id_ = 0;
-	}
-	return *this;
 }
 
 GLuint Shader::id() const { return id_; }

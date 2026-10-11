@@ -148,8 +148,10 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
-    <ClCompile Include="Transformation.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Transformation.cpp" />
+    <ClCompile Include="TransformationComposite.cpp" />
+    <ClCompile Include="TransformationLeaf.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="basic.frag" />
@@ -162,9 +164,11 @@
     <ClInclude Include="DrawableObject.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Models\bushes.h" />
+    <ClInclude Include="Models\earth.h" />
     <ClInclude Include="Models\gift.h" />
-    <ClInclude Include="Models\plain.h" />
+    <ClInclude Include="Models\moon.h" />
     <ClInclude Include="Models\sphere.h" />
+    <ClInclude Include="Models\sun.h" />
     <ClInclude Include="Models\suzi_flat.h" />
     <ClInclude Include="Models\suzi_smooth.h" />
     <ClInclude Include="Models\tree.h" />
@@ -172,6 +176,8 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Transformation.h" />
+    <ClInclude Include="TransformationComposite.h" />
+    <ClInclude Include="TransformationLeaf.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

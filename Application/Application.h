@@ -1,3 +1,10 @@
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: Application.h
+ * Description:  Header file for the Applicatin class
+ */
+
 #pragma once
 struct GLFWwindow;
 class Scene;
@@ -8,14 +15,13 @@ public:
 	Application();
 	~Application();
 
-	//Application(const Application&) = delete;
-	//Application& operator=(const Application&) = delete;
-
 	void initialization();
 	void createShaders();
-	void createModels(int mode);
+	void createModels(int mode=1);
+	void setScene(int mode);
 	int run();
-	void setRotationDirection(float direction);
+
+	void setRotationDirection(int direction);
 
 private:
 	static void errorCallback(int error, const char* description);

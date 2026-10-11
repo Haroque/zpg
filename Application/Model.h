@@ -1,7 +1,11 @@
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: Model.h
+ * Description:  Header file for the Model class
+ */
 #pragma once
-
 #include <vector>
-
 #include <glad/gl.h>
 
 class Model

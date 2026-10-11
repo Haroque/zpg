@@ -1,22 +1,32 @@
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: Model.cpp
+ * Description:  Implementation file for the Model class
+ */
+
 #include "Model.h"
 
 
 Model::Model(const std::vector<float>& vertices, int vertexCount, GLenum drawMode)
-    : vertexCount_(vertexCount), drawMode_(drawMode) // Uložíme si počet vrcholů pro pozdější volání draw
+	: vertexCount_(vertexCount), drawMode_(drawMode) //  Saving the vertex count for later draw calls
 {
-    glGenBuffers(1, &vertexBufferObject_);
+
+    glGenVertexArrays(1, &vertexArrayObject_);//creating and bindind a vao
+    glBindVertexArray(vertexArrayObject_);
+
+    glGenBuffers(1, &vertexBufferObject_); 
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject_);
-    
-    // Místo statického sizeof(points) spočítáme dynamickou velikost vektoru v bajtech
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
-    glGenVertexArrays(1, &vertexArrayObject_);
-    glBindVertexArray(vertexArrayObject_);
-    
+    // vertices.size() / vertexCount => there could be models with colors, later textures etc.
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (vertices.size() / vertexCount) * sizeof(float), nullptr);
+
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (vertices.size() / vertexCount) * sizeof(float), (void*)(3 * sizeof(float)));
+
+	glBindVertexArray(0); 
 }
 
 Model::~Model()
@@ -29,4 +39,5 @@ void Model::draw() const
 {
 	glBindVertexArray(vertexArrayObject_);
 	glDrawArrays(drawMode_, 0, vertexCount_);
+	glBindVertexArray(0); //Setting vao to 0 unbinds the current vao, a good practice to avoid accidental modifications to it later in the code.
 }

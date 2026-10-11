@@ -1,3 +1,10 @@
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: ShaderProgram.cpp
+ * Description:  Implementation file for the ShaderProgram class
+ */
+
 #include "ShaderProgram.h"
 #include <glm/gtc/type_ptr.hpp>
 
@@ -41,11 +48,45 @@ ShaderProgram::~ShaderProgram()
 		glDeleteProgram(id);
 }
 
-void ShaderProgram::use() const { glUseProgram(id); }
+void ShaderProgram::use() const
+{ 
+	glUseProgram(id); 
+}
 
-void ShaderProgram::setTransformation(const Transformation& transformation) const
+GLint ShaderProgram::uniformLocation(const GLchar* name) const
 {
-	glUniformMatrix4fv(glGetUniformLocation(id, "model"), 1, GL_FALSE, glm::value_ptr(transformation.model()));
-	glUniformMatrix4fv(glGetUniformLocation(id, "view"), 1, GL_FALSE, glm::value_ptr(transformation.view()));
-	glUniformMatrix4fv(glGetUniformLocation(id, "projection"), 1, GL_FALSE, glm::value_ptr(transformation.projection()));
+	GLint location = glGetUniformLocation(id, name);
+	if (location == -1)
+		std::cerr << "Uniform '" << name << "' not found in ShaderProgram.\n";
+	return location;
+}
+
+void ShaderProgram::setUniform(const GLchar* name, float value) const
+{
+	GLint location = uniformLocation(name);
+	if (location != -1)
+		glUniform1f(location, value);
+}
+
+void ShaderProgram::setUniform(const GLchar* name, int value) const
+{
+	GLint location = uniformLocation(name);
+	if (location != -1)
+		glUniform1i(location, value);
+}
+
+void ShaderProgram::setUniform(const GLchar* name, const glm::vec3& value) const
+{
+	GLint location = uniformLocation(name);
+	if (location != -1)
+		glUniform3fv(location, 1, glm::value_ptr(value));
+}
+
+//new uniform function without transponing the matrix
+// glm::value_ptr returns a pointer to the first element of the matrix in columns
+void ShaderProgram::setUniform(const GLchar* name, const glm::mat4 matrix) const
+{
+	GLint location = uniformLocation(name);
+	if (location != -1)
+		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }

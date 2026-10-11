@@ -1,13 +1,12 @@
-﻿
- //Include GLAD
- //Only define this in one file
-#define GLAD_GL_IMPLEMENTATION
+﻿/*
+ * Antonin Harok HAR0199
+ *
+ * File: Application.cpp
+ * Description:  Implementation file for the Application class
+ */
+#define GLAD_GL_IMPLEMENTATION  //Only define this in one file
 #include <glad/gl.h>
-
- //Include GLFW
 #include <GLFW/glfw3.h>
-
-//Include the standard C++ headers
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -40,7 +39,7 @@ void Application::initialization()
     glfwMakeContextCurrent(window_);
     glfwSwapInterval(1);
 
-    //
+    
     glfwSetWindowUserPointer(window_, this);
     glfwSetKeyCallback(window_, keyCallback);
     glfwSetWindowSizeCallback(window_, windowSizeCallback);
@@ -69,6 +68,20 @@ void Application::createModels(int mode)
     scene_->createModels(mode);
 }
 
+void Application::setScene(int mode)
+{
+	if (!scene_)
+		return;
+	scene_->clearModels();
+	scene_->createModels(mode);
+}
+
+void Application::setRotationDirection(int direction)
+{
+    if (scene_)
+        scene_->setRotationDirection(direction);
+}
+
 int Application::run()
 {
     while (!glfwWindowShouldClose(window_))
@@ -83,12 +96,6 @@ int Application::run()
         glfwPollEvents();
     }
     return 0;
-}
-
-void Application::setRotationDirection(float direction)
-{
-    if (scene_)
-        scene_->setRotationDirection(direction);
 }
 
 void Application::errorCallback(int, const char* description)
@@ -106,14 +113,18 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
     {
         Application* application = static_cast<Application*>(glfwGetWindowUserPointer(window));
     
-        if (key == GLFW_KEY_LEFT || key == GLFW_KEY_UP)
+        if (key == GLFW_KEY_UP)
         {
-            application->setRotationDirection(-1.0f);
+            application->setRotationDirection(-1);
         }
-        else if (key == GLFW_KEY_RIGHT || key == GLFW_KEY_DOWN)
+        else if (key == GLFW_KEY_DOWN)
         {
-            application->setRotationDirection(1.0f);
+            application->setRotationDirection(1);
         }
+		else if (key >=GLFW_KEY_1 && key <= GLFW_KEY_6)
+		{
+            application->setScene(key - GLFW_KEY_0);
+		}
     }
 }
 

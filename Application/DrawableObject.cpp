@@ -1,30 +1,44 @@
+/*
+ * Antonin Harok HAR0199
+ *
+ * File: DrawableObject.cpp
+ * Description:  Implementation file for the DrawableObject class
+ */
+
 #include "DrawableObject.h"
-
 #include "ShaderProgram.h"
+#include "Model.h"
 
-DrawableObject::DrawableObject(ShaderProgram& shaderProgram, std::unique_ptr<Model> model)
-	: shaderProgram_(shaderProgram), model_(std::move(model))
+DrawableObject::DrawableObject(ShaderProgram& shaderProgram, Model& model)
+	: shaderProgram_(shaderProgram), model_(model)
 {
 }
+
 
 void DrawableObject::update()
 {
-	transformation_.update();
+	if (transformation_) {
+		transformation_->update();
+	}
 }
 
-void DrawableObject::setRotationDirection(float direction)
-{
-	transformation_.setRotationDirection(direction);
-}
 
-void DrawableObject::setPosition(const glm::vec3& position)
-{
-	transformation_.setPosition(position);
-}
-
-void DrawableObject::draw()
+void DrawableObject::draw() 
 {
 	shaderProgram_.use();
-	shaderProgram_.setTransformation(transformation_);
-	model_->draw();
+	glm::mat4 modelMatrix= glm::mat4(1.0f);
+
+	if (transformation_) {
+		modelMatrix = transformation_->getMatrix();
+	}
+
+	shaderProgram_.setUniform("modelMatrix", modelMatrix);
+
+	model_.draw();
+}
+void DrawableObject::setRotationDirection(int direction)
+{
+	if (transformation_) {
+		transformation_->setRotationDirection(direction);
+	}
 }
