@@ -10,5 +10,6 @@
     Composite slouží tak jako "obal" jednotlivých transormací.
 6. Splněno - Pomocí fce rand() byla vygenerováná náhodná pozice od 0 do 199, velikost od 0.1 do 0.2. Používá se Composite a transformace se na sebe skládají.
 7. Splněno - Nutno zvětšit velikost v vertex pointeru, modely slunce apod. mají kromě normály a pozice i hodnoty na barvu.
-
+            Slunce zůstává ve středu (Scale a Rotation). Země začne rotovat, posune se, tak se zachová rotace kolem vlastní osy, následně se změní velikost a poslední rotace, která zajistí obíhání Slunce.
+            Měsíc "dědí" chování Země (Rotaci a Translaci), následně si přidá vlastní.
 
