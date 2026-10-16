@@ -29,6 +29,8 @@
 #include "Models/sun.h"
 #include "Models/earth.h"
 #include "Models/clock.h"
+#include <GLFW/glfw3.h>
+#include <glm/gtc/constants.hpp>
 
 Scene::Scene() = default;
 
@@ -53,6 +55,18 @@ void Scene::createShaders()
     Shader rainbowFragmentShader(GL_FRAGMENT_SHADER, "shaders/basic.frag");
     shaderPrograms_.push_back(std::make_unique<ShaderProgram>(
         std::move(rainbowVertexShader), std::move(rainbowFragmentShader)));
+
+	//Index 3: Tree shader
+	Shader treeVertexShader(GL_VERTEX_SHADER, "shaders/tree.vert");
+	Shader treeFragmentShader(GL_FRAGMENT_SHADER, "shaders/basic.frag");
+    shaderPrograms_.push_back(std::make_unique<ShaderProgram>(
+        std::move(treeVertexShader), std::move(treeFragmentShader)));
+
+	//Index 4: Clock shader
+	Shader clockVertexShader(GL_VERTEX_SHADER, "shaders/clock.vert");
+	Shader clockFragmentShader(GL_FRAGMENT_SHADER, "shaders/basic.frag");
+    shaderPrograms_.push_back(std::make_unique<ShaderProgram>(
+        std::move(clockVertexShader), std::move(clockFragmentShader)));
 
 	if (!camera_ && !shaderPrograms_.empty())
 		camera_ = std::make_unique<Camera>(shaderPrograms_.front().get());
@@ -106,38 +120,49 @@ void Scene::createModels(int mode)
 		static Model bushModel(bushData, static_cast<int>(bushData.size() / 6), GL_TRIANGLES);
 	
 	
-		for (int i = 0; i < 12; i++)
+		for (int i = 0; i < 74; i++)
 		{
-			auto treeObj = std::make_unique<DrawableObject>(*shaderPrograms_[2], treeModel);
+			auto treeObj = std::make_unique<DrawableObject>(*shaderPrograms_[3], treeModel);
 			auto trans = std::make_shared<TransformationComposite>();
 			
-			//from 0 to 199, scale from 0.1 to 0.2
-			float posX = (rand() % 200) / 100.0f - 1.0f;
-			float posY = (rand() % 200) / 100.0f - 1.0f;
-			float scale = (rand() % 10) / 100.0f + 0.1f;
+			float posX = ((rand() % 3000) / 100.0f) - 15.0f; // -15 to +15
+			float posZ = ((rand() % 3000) / 100.0f) - 15.0f; // -15 to +15
+			float scale = ((rand() % 15) / 100.0f) + 0.15f;
 			
-			trans->addTransformation(std::make_shared<Translate>(glm::vec3(posX, posY, 0.0f)));
+			trans->addTransformation(std::make_shared<Translate>(glm::vec3(posX, 0.0f, posZ)));
 			trans->addTransformation(std::make_shared<Scale>(glm::vec3(scale)));
 
 			treeObj->setTransformation(trans);
 			drawableObjects_.push_back(std::move(treeObj));
 
 		}
-		for (int i = 0; i < 15; i++)
+		for (int i = 0; i < 40; i++)
 		{
-			auto bushObj = std::make_unique<DrawableObject>(*shaderPrograms_[0], bushModel);
+			auto bushObj = std::make_unique<DrawableObject>(*shaderPrograms_[3], bushModel);
 			auto trans = std::make_shared<TransformationComposite>();
 
-			float posX = (rand() % 200) / 100.0f - 1.0f;
-			float posY = (rand() % 200) / 100.0f - 1.0f;
-			float scale = (rand() % 10) / 100.0f + 0.1f;
+			float posX = ((rand() % 3000) / 100.0f) - 15.0f;
+			float posZ = ((rand() % 3000) / 100.0f) - 15.0f;
+			float scale = ((rand() % 10) / 100.0f) + 0.1f;
 
-			trans->addTransformation(std::make_shared<Translate>(glm::vec3(posX, posY, 0.0f)));
+			trans->addTransformation(std::make_shared<Translate>(glm::vec3(posX, 0.0f, posZ)));
 			trans->addTransformation(std::make_shared<Scale>(glm::vec3(scale)));
 
 			bushObj->setTransformation(trans);
 			drawableObjects_.push_back(std::move(bushObj));
 		}
+		static std::vector<float> Clockdata(clockModel, clockModel + sizeof(clockModel) / sizeof(float));
+		static Model ClockModel(Clockdata, static_cast<int>(Clockdata.size() / 9), GL_TRIANGLES);
+
+		auto ClockObject = std::make_unique<DrawableObject>(*shaderPrograms_[4], ClockModel);
+
+		auto comp = std::make_shared<TransformationComposite>();
+		comp->addTransformation(std::make_shared<Translate>(glm::vec3(0.0f, 0.0f, 0.0f)));
+
+		comp->addTransformation(std::make_shared<Rotate>(glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f));
+		comp->addTransformation(std::make_shared<Scale>(glm::vec3(0.5f)));
+		ClockObject->setTransformation(comp);
+		drawableObjects_.push_back(std::move(ClockObject));
 
 	}
 	else if (mode == 4) //login
@@ -221,13 +246,20 @@ void Scene::createModels(int mode)
 	else if(mode == 7)
 	{ 
 		static std::vector<float> Clockdata(clockModel, clockModel + sizeof(clockModel) / sizeof(float));
-		static Model ClockModel(Clockdata, static_cast<int>(Clockdata.size() /9 ), GL_TRIANGLES);
+		static Model ClockModel(Clockdata, static_cast<int>(Clockdata.size() / 9), GL_TRIANGLES);
 
-		auto ClockObject = std::make_unique<DrawableObject>(*shaderPrograms_[1], ClockModel);
-		ClockObject->setTransformation(std::make_shared<Translate>(glm::vec3(0.0f, 0.0f, 0.0f)));
+		auto ClockObject = std::make_unique<DrawableObject>(*shaderPrograms_[4], ClockModel);
+
+		auto comp = std::make_shared<TransformationComposite>();
+		comp->addTransformation(std::make_shared<Translate>(glm::vec3(0.0f, 0.0f, 0.0f)));
+		
+		comp->addTransformation(std::make_shared<Rotate>(glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f));
+		comp->addTransformation(std::make_shared<Scale>(glm::vec3(0.5f)));
+		ClockObject->setTransformation(comp);
 		drawableObjects_.push_back(std::move(ClockObject));
 	}
 }
+
 
 void Scene::signature()
 {
@@ -253,8 +285,22 @@ void Scene::clearModels()
 
 void Scene::update()
 {
-    for (auto& obj : drawableObjects_)
-        obj->update();
+	for (auto& obj : drawableObjects_)
+		obj->update();
+
+	float time = static_cast<float>(glfwGetTime());
+
+	float secAngle = -glm::mod(time, 60.0f) / 60.0f * glm::two_pi<float>();
+	float minAngle = -glm::mod(time / 60.0f, 60.0f) / 60.0f * glm::two_pi<float>();
+	float hourAngle = -glm::mod(time / 3600.0f, 12.0f) / 12.0f * glm::two_pi<float>();
+
+	if (shaderPrograms_.size() > 4)
+	{
+		shaderPrograms_[4]->use();
+		shaderPrograms_[4]->setUniform("secAngle", secAngle);
+		shaderPrograms_[4]->setUniform("minAngle", minAngle);
+		shaderPrograms_[4]->setUniform("hourAngle", hourAngle);
+	}
 }
 
 void Scene::setRotationDirection(int direction)
@@ -266,16 +312,22 @@ void Scene::setRotationDirection(int direction)
 
 void Scene::render()
 {
-	for (auto& shader : shaderPrograms_)
+	if (camera_)
 	{
-		camera_->updateShaderProgram(*shader);
+		for (auto& shader : shaderPrograms_)
+		{
+			if (shader)
+				camera_->updateShaderProgram(*shader);
+		}
 	}
 
 	for (auto& obj : drawableObjects_)
 	{
-		obj->draw();
+		if (obj)
+			obj->draw();
 	}
 }
+
 void Scene::moveCamera(int direction)
 {
 	if (!camera_)

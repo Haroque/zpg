@@ -166,6 +166,7 @@
     <ClInclude Include="DrawableObject.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Models\bushes.h" />
+    <ClInclude Include="Models\clock.h" />
     <ClInclude Include="Models\earth.h" />
     <ClInclude Include="Models\gift.h" />
     <ClInclude Include="Models\moon.h" />

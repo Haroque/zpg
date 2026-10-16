@@ -11,6 +11,8 @@
 Model::Model(const std::vector<float>& vertices, int vertexCount, GLenum drawMode)
 	: vertexCount_(vertexCount), drawMode_(drawMode) //  Saving the vertex count for later draw calls
 {
+    if (vertexCount_ <= 0 || vertices.empty())
+        return;
 
     glGenVertexArrays(1, &vertexArrayObject_);//creating and bindind a vao
     glBindVertexArray(vertexArrayObject_);
@@ -19,12 +21,19 @@ Model::Model(const std::vector<float>& vertices, int vertexCount, GLenum drawMod
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject_);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
-    // vertices.size() / vertexCount => there could be models with colors, later textures etc.
+	int perVertexSize = static_cast<int>(vertices.size() / vertexCount_);
+    
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (vertices.size() / vertexCount) * sizeof(float), nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, perVertexSize * sizeof(float), (void*)0);
 
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (vertices.size() / vertexCount) * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, perVertexSize * sizeof(float), (void*)(3 * sizeof(float)));
+
+    if (perVertexSize >= 9)
+    {
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, perVertexSize * sizeof(float), (void*)(6 * sizeof(float)));
+    }
 
 	glBindVertexArray(0); 
 }

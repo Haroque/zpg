@@ -38,7 +38,6 @@ void Application::initialization()
 
     glfwMakeContextCurrent(window_);
     glfwSwapInterval(1);
-
     
     glfwSetWindowUserPointer(window_, this);
     glfwSetKeyCallback(window_, keyCallback);
@@ -52,6 +51,8 @@ void Application::initialization()
     glfwGetFramebufferSize(window_, &width, &height);
     glViewport(0, 0, width, height);
     glEnable(GL_DEPTH_TEST);
+    //    
+    glDisable(GL_CULL_FACE);
 }
 
 void Application::createShaders()
@@ -127,23 +128,23 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
         {
             application->setRotationDirection(1);
         }
-		else if (key >=GLFW_KEY_1 && key <= GLFW_KEY_6)
+		else if (key >=GLFW_KEY_1 && key <= GLFW_KEY_7)
 		{
             application->setScene(key - GLFW_KEY_0);
 		}
-        else if (key >= GLFW_KEY_W)
+        else if (key == GLFW_KEY_W)
         {
 			application->moveCamera(0);
         }
-        else if (key >= GLFW_KEY_S)
+        else if (key == GLFW_KEY_S)
         {
             application->moveCamera(1);
         }
-        else if (key >= GLFW_KEY_A)
+        else if (key == GLFW_KEY_A)
         {
             application->moveCamera(2);
         }
-        else if (key >= GLFW_KEY_D)
+        else if (key == GLFW_KEY_D)
         {
             application->moveCamera(3);
         }
