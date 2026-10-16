@@ -48,6 +48,9 @@
     <ClCompile Include="TransformationComposite.cpp">
       <Filter>Zdrojové soubory</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Zdrojové soubory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="basic.frag" />
@@ -108,6 +111,9 @@
       <Filter>Hlavičkové soubory\models</Filter>
     </ClInclude>
     <ClInclude Include="TransformationComposite.h">
+      <Filter>Hlavičkové soubory</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
       <Filter>Hlavičkové soubory</Filter>
     </ClInclude>
   </ItemGroup>

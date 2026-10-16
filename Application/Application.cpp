@@ -82,6 +82,12 @@ void Application::setRotationDirection(int direction)
         scene_->setRotationDirection(direction);
 }
 
+void Application::moveCamera(int direction)
+{
+	if (scene_)
+		scene_->moveCamera(direction);
+ }
+
 int Application::run()
 {
     while (!glfwWindowShouldClose(window_))
@@ -125,6 +131,22 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
 		{
             application->setScene(key - GLFW_KEY_0);
 		}
+        else if (key >= GLFW_KEY_W)
+        {
+			application->moveCamera(0);
+        }
+        else if (key >= GLFW_KEY_S)
+        {
+            application->moveCamera(1);
+        }
+        else if (key >= GLFW_KEY_A)
+        {
+            application->moveCamera(2);
+        }
+        else if (key >= GLFW_KEY_D)
+        {
+            application->moveCamera(3);
+        }
     }
 }
 

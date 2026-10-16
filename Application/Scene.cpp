@@ -10,7 +10,7 @@
 #include "Model.h"
 #include "Shader.h"
 #include "ShaderProgram.h"
-
+#include "Camera.h"
 #include "TransformationComposite.h"
 #include "TransformationLeaf.h"
 
@@ -28,6 +28,7 @@
 #include "Models/moon.h"
 #include "Models/sun.h"
 #include "Models/earth.h"
+#include "Models/clock.h"
 
 Scene::Scene() = default;
 
@@ -52,6 +53,9 @@ void Scene::createShaders()
     Shader rainbowFragmentShader(GL_FRAGMENT_SHADER, "shaders/basic.frag");
     shaderPrograms_.push_back(std::make_unique<ShaderProgram>(
         std::move(rainbowVertexShader), std::move(rainbowFragmentShader)));
+
+	if (!camera_ && !shaderPrograms_.empty())
+		camera_ = std::make_unique<Camera>(shaderPrograms_.front().get());
 }
 
 void Scene::createModels(int mode)
@@ -169,17 +173,17 @@ void Scene::createModels(int mode)
 		static Model moonModel(moonData, static_cast<int>(moonData.size() / 9), GL_TRIANGLES);
 
 		// Shared rotation around the Sun for Earth and Moon (later)
-		auto earthRotation = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 0.0f, 1.0f), 0.01f);
+		auto earthRotation = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.01f);
 		earthRotation->setRotationDirection(1);
 		auto earthDistTrans = std::make_shared<Translate>(glm::vec3(0.6f, 0.0f, 0.0f));
 
 		// Share rotation around the Sun for Earth and Moon
-		auto moonRotation = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 0.0f, 1.0f), 0.03f);
+		auto moonRotation = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.03f);
 		moonRotation->setRotationDirection(1);
 		auto moonDistTrans = std::make_shared<Translate>(glm::vec3(0.15f, 0.0f, 0.0f));
 
 		// Shared rotation around its own axis for all planets
-		auto axisRotation = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 0.0f, 1.0f), 0.05f);
+		auto axisRotation = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f,1.0f, 0.0f), 0.05f);
 		axisRotation->setRotationDirection(1);
 
 
@@ -213,6 +217,15 @@ void Scene::createModels(int mode)
 		moonObj->setTransformation(moonTrans);
 		drawableObjects_.push_back(std::move(moonObj));
 
+	}
+	else if(mode == 7)
+	{ 
+		static std::vector<float> Clockdata(clockModel, clockModel + sizeof(clockModel) / sizeof(float));
+		static Model ClockModel(Clockdata, static_cast<int>(Clockdata.size() /9 ), GL_TRIANGLES);
+
+		auto ClockObject = std::make_unique<DrawableObject>(*shaderPrograms_[1], ClockModel);
+		ClockObject->setTransformation(std::make_shared<Translate>(glm::vec3(0.0f, 0.0f, 0.0f)));
+		drawableObjects_.push_back(std::move(ClockObject));
 	}
 }
 
@@ -250,10 +263,38 @@ void Scene::setRotationDirection(int direction)
 		obj->setRotationDirection(direction);
 }
 
+
 void Scene::render()
 {
+	for (auto& shader : shaderPrograms_)
+	{
+		camera_->updateShaderProgram(*shader);
+	}
+
 	for (auto& obj : drawableObjects_)
-    {
+	{
 		obj->draw();
-    }
+	}
+}
+void Scene::moveCamera(int direction)
+{
+	if (!camera_)
+		return;
+	switch (direction)
+	{
+	case 0: // forward w
+		camera_->moveForward(0.1f); 
+		break;
+	case 1: // backward s
+		camera_->moveBackward(0.1f);
+		break;
+	case 2: // left a
+		camera_->moveLeft(0.1f);
+		break;
+	case 3: // right d
+		camera_->moveRight(0.1f);
+		break;
+	default:
+		break;
+	}
 }

@@ -12,7 +12,7 @@
 #include <string>
 
 #include "Shader.h"
-
+class Camera;
 
 class ShaderProgram
 {
@@ -32,11 +32,15 @@ public:
 	// transformation in projection space
 	void setUniform(const GLchar* name, const glm::mat4 matrix) const;
 
+	ShaderProgram(Camera* camera);
+	void method();
 	
 	
 	
 
 private:
+	Camera* m_camera;
+
 	GLuint id = 0;
 	Shader vertexShader_;
 	Shader fragmentShader_;
