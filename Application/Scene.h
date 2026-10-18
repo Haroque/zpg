@@ -33,6 +33,8 @@ public:
 	void render();
 
 	void signature();
+	void planets();
+	void clock();
 
 private:
 	vector<unique_ptr<ShaderProgram>> shaderPrograms_;

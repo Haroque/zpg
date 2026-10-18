@@ -151,18 +151,8 @@ void Scene::createModels(int mode)
 			bushObj->setTransformation(trans);
 			drawableObjects_.push_back(std::move(bushObj));
 		}
-		static std::vector<float> Clockdata(clockModel, clockModel + sizeof(clockModel) / sizeof(float));
-		static Model ClockModel(Clockdata, static_cast<int>(Clockdata.size() / 9), GL_TRIANGLES);
-
-		auto ClockObject = std::make_unique<DrawableObject>(*shaderPrograms_[4], ClockModel);
-
-		auto comp = std::make_shared<TransformationComposite>();
-		comp->addTransformation(std::make_shared<Translate>(glm::vec3(0.0f, 0.0f, 0.0f)));
-
-		comp->addTransformation(std::make_shared<Rotate>(glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f));
-		comp->addTransformation(std::make_shared<Scale>(glm::vec3(0.5f)));
-		ClockObject->setTransformation(comp);
-		drawableObjects_.push_back(std::move(ClockObject));
+		clock();
+		planets();
 
 	}
 	else if (mode == 4) //login
@@ -189,77 +179,87 @@ void Scene::createModels(int mode)
 	}
 	else if (mode == 6)
 	{
-		static std::vector<float> sunData(sun, sun + sizeof(sun) / sizeof(float));
-		static std::vector<float> earthData(earth, earth + sizeof(earth) / sizeof(float));
-		static std::vector<float> moonData(moon, moon + sizeof(moon) / sizeof(float));
-
-		static Model sunModel(sunData, static_cast<int>(sunData.size() / 9), GL_TRIANGLES);
-		static Model earthModel(earthData, static_cast<int>(earthData.size() / 9), GL_TRIANGLES);
-		static Model moonModel(moonData, static_cast<int>(moonData.size() / 9), GL_TRIANGLES);
-
-		// Shared rotation around the Sun for Earth and Moon (later)
-		auto earthRotation = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.01f);
-		earthRotation->setRotationDirection(1);
-		auto earthDistTrans = std::make_shared<Translate>(glm::vec3(0.6f, 0.0f, 0.0f));
-
-		// Share rotation around the Sun for Earth and Moon
-		auto moonRotation = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.03f);
-		moonRotation->setRotationDirection(1);
-		auto moonDistTrans = std::make_shared<Translate>(glm::vec3(0.15f, 0.0f, 0.0f));
-
-		// Shared rotation around its own axis for all planets
-		auto axisRotation = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f,1.0f, 0.0f), 0.05f);
-		axisRotation->setRotationDirection(1);
-
-
-		// 1. Sun (In the center. S1 R1)
-		auto sunObj = std::make_unique<DrawableObject>(*shaderPrograms_[2], sunModel);
-		auto sunTrans = std::make_shared<TransformationComposite>();
-		sunTrans->addTransformation(std::make_shared<Scale>(glm::vec3(0.2f)));
-		sunTrans->addTransformation(axisRotation);
-		sunObj->setTransformation(sunTrans);
-		drawableObjects_.push_back(std::move(sunObj));
-
-		//2. Earth R1 T1 S1 R2
-		auto earthObj = std::make_unique<DrawableObject>(*shaderPrograms_[2], earthModel);
-		auto earthTrans = std::make_shared<TransformationComposite>();
-		earthTrans->addTransformation(earthRotation);                           // R around Sun
-		earthTrans->addTransformation(earthDistTrans);                          // T from Sun
-		earthTrans->addTransformation(std::make_shared<Scale>(glm::vec3(0.1f))); 
-		earthTrans->addTransformation(axisRotation);                                 // R around its own axis
-		earthObj->setTransformation(earthTrans);
-		drawableObjects_.push_back(std::move(earthObj));
-
-		// 3. Moon R1 T1 R2 T2 S1 R3
-		auto moonObj = std::make_unique<DrawableObject>(*shaderPrograms_[2], moonModel);
-		auto moonTrans = std::make_shared<TransformationComposite>();
-		moonTrans->addTransformation(earthRotation);                            // R from Sun (inherited from Earth)
-		moonTrans->addTransformation(earthDistTrans);                           // T from Earth
-		moonTrans->addTransformation(moonRotation);                             // R around Earth
-		moonTrans->addTransformation(moonDistTrans);                            // T from Earth
-		moonTrans->addTransformation(std::make_shared<Scale>(glm::vec3(0.02f)));  
-		moonTrans->addTransformation(axisRotation);                                  // R around its own axis
-		moonObj->setTransformation(moonTrans);
-		drawableObjects_.push_back(std::move(moonObj));
-
+		planets();
 	}
+
 	else if(mode == 7)
 	{ 
-		static std::vector<float> Clockdata(clockModel, clockModel + sizeof(clockModel) / sizeof(float));
-		static Model ClockModel(Clockdata, static_cast<int>(Clockdata.size() / 9), GL_TRIANGLES);
-
-		auto ClockObject = std::make_unique<DrawableObject>(*shaderPrograms_[4], ClockModel);
-
-		auto comp = std::make_shared<TransformationComposite>();
-		comp->addTransformation(std::make_shared<Translate>(glm::vec3(0.0f, 0.0f, 0.0f)));
-		
-		comp->addTransformation(std::make_shared<Rotate>(glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f));
-		comp->addTransformation(std::make_shared<Scale>(glm::vec3(0.5f)));
-		ClockObject->setTransformation(comp);
-		drawableObjects_.push_back(std::move(ClockObject));
+		clock();
 	}
 }
 
+void Scene::planets()
+{
+	static std::vector<float> sunData(sun, sun + sizeof(sun) / sizeof(float));
+	static std::vector<float> earthData(earth, earth + sizeof(earth) / sizeof(float));
+	static std::vector<float> moonData(moon, moon + sizeof(moon) / sizeof(float));
+
+	static Model sunModel(sunData, static_cast<int>(sunData.size() / 9), GL_TRIANGLES);
+	static Model earthModel(earthData, static_cast<int>(earthData.size() / 9), GL_TRIANGLES);
+	static Model moonModel(moonData, static_cast<int>(moonData.size() / 9), GL_TRIANGLES);
+
+	// Shared rotation around the Sun for Earth and Moon (later)
+	auto earthRotation = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.01f);
+	earthRotation->setRotationDirection(1);
+	auto earthDistTrans = std::make_shared<Translate>(glm::vec3(0.6f, 0.0f, 0.0f));
+
+	// Share rotation around the Sun for Earth and Moon
+	auto moonRotation = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.03f);
+	moonRotation->setRotationDirection(1);
+	auto moonDistTrans = std::make_shared<Translate>(glm::vec3(0.15f, 0.0f, 0.0f));
+
+	// Shared rotation around its own axis for all planets
+	auto axisRotation = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.05f);
+	axisRotation->setRotationDirection(1);
+
+
+	// 1. Sun (In the center. S1 R1)
+	auto sunObj = std::make_unique<DrawableObject>(*shaderPrograms_[2], sunModel);
+	auto sunTrans = std::make_shared<TransformationComposite>();
+	sunTrans->addTransformation(std::make_shared<Scale>(glm::vec3(0.2f)));
+	sunTrans->addTransformation(axisRotation);
+	sunObj->setTransformation(sunTrans);
+	drawableObjects_.push_back(std::move(sunObj));
+
+	//2. Earth R1 T1 S1 R2
+	auto earthObj = std::make_unique<DrawableObject>(*shaderPrograms_[2], earthModel);
+	auto earthTrans = std::make_shared<TransformationComposite>();
+	earthTrans->addTransformation(earthRotation);                           // R around Sun
+	earthTrans->addTransformation(earthDistTrans);                          // T from Sun
+	earthTrans->addTransformation(std::make_shared<Scale>(glm::vec3(0.1f)));
+	earthTrans->addTransformation(axisRotation);                                 // R around its own axis
+	earthObj->setTransformation(earthTrans);
+	drawableObjects_.push_back(std::move(earthObj));
+
+	// 3. Moon R1 T1 R2 T2 S1 R3
+	auto moonObj = std::make_unique<DrawableObject>(*shaderPrograms_[2], moonModel);
+	auto moonTrans = std::make_shared<TransformationComposite>();
+	moonTrans->addTransformation(earthRotation);                            // R from Sun (inherited from Earth)
+	moonTrans->addTransformation(earthDistTrans);                           // T from Earth
+	moonTrans->addTransformation(moonRotation);                             // R around Earth
+	moonTrans->addTransformation(moonDistTrans);                            // T from Earth
+	moonTrans->addTransformation(std::make_shared<Scale>(glm::vec3(0.02f)));
+	moonTrans->addTransformation(axisRotation);                                  // R around its own axis
+	moonObj->setTransformation(moonTrans);
+	drawableObjects_.push_back(std::move(moonObj));
+
+}
+
+void Scene::clock()
+{
+	static std::vector<float> Clockdata(clockModel, clockModel + sizeof(clockModel) / sizeof(float));
+	static Model ClockModel(Clockdata, static_cast<int>(Clockdata.size() / 9), GL_TRIANGLES);
+
+	auto ClockObject = std::make_unique<DrawableObject>(*shaderPrograms_[4], ClockModel);
+
+	auto comp = std::make_shared<TransformationComposite>();
+	comp->addTransformation(std::make_shared<Translate>(glm::vec3(0.0f, 0.0f, 0.0f)));
+
+	comp->addTransformation(std::make_shared<Rotate>(glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f));
+	comp->addTransformation(std::make_shared<Scale>(glm::vec3(0.5f)));
+	ClockObject->setTransformation(comp);
+	drawableObjects_.push_back(std::move(ClockObject));
+}
 
 void Scene::signature()
 {
