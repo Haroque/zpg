@@ -1,6 +1,10 @@
 1. Splněno - V třídě Camera se počítá pohledová matice pomocí glm::lookAt(eye, eye + target, up) a projekční pomocí glm::perspective.
             Posílá se viewMatrix a projectionMatrix do shaderů.
-2. Splněno
-3. Splněno 
-4. Splněno 
+
+2. Splněno - Nyní se lze po lese pohybovat pomosí wsad, stromy mají náhodné velikosti, odstíny zelené a hnědé a jejich rotaci. Kurzor není uzamknut.
+
+3. Splněno - 
+
+4. Splněno - 
+
 5. Splněno - Byla vytvořena třída Observer, ze kterého dědí ShaderProgram a třída Subject, ze které dědí Camera.

@@ -34,7 +34,7 @@ public:
 	void render();
 
 	void signature();
-	void planets();
+	void planets(glm::vec3 basePosition = glm::vec3(0.0f), float baseScale = 1.0f);
 	void clock();
 	void groundSetup();
 

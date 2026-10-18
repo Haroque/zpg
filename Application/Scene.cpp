@@ -144,11 +144,13 @@ void Scene::createModels(int mode)
 			
 			float posX = ((rand() % 3000) / 100.0f) - 15.0f; // -15 to +15
 			float posZ = ((rand() % 3000) / 100.0f) - 15.0f; // -15 to +15
-			float scale = ((rand() % 15) / 100.0f) + 0.15f;
-			
+			float scale = ((rand() % 50) / 100.0f) + 0.10f;
+
+			float rotY = ((rand() % 360) * 3.14159f) / 180.0f; 
+
 			trans->addTransformation(std::make_shared<Translate>(glm::vec3(posX, 0.0f, posZ)));
 			trans->addTransformation(std::make_shared<Scale>(glm::vec3(scale)));
-
+			trans->addTransformation(std::make_shared<Rotate>(rotY, glm::vec3(0.0f, 1.0f, 0.0f), 0.0f));
 			treeObj->setTransformation(trans);
 			drawableObjects_.push_back(std::move(treeObj));
 
@@ -160,7 +162,7 @@ void Scene::createModels(int mode)
 
 			float posX = ((rand() % 3000) / 100.0f) - 15.0f;
 			float posZ = ((rand() % 3000) / 100.0f) - 15.0f;
-			float scale = ((rand() % 10) / 100.0f) + 0.1f;
+			float scale = ((rand() % 50) / 100.0f) + 0.50f;
 
 			trans->addTransformation(std::make_shared<Translate>(glm::vec3(posX, 0.0f, posZ)));
 			trans->addTransformation(std::make_shared<Scale>(glm::vec3(scale)));
@@ -169,7 +171,7 @@ void Scene::createModels(int mode)
 			drawableObjects_.push_back(std::move(bushObj));
 		}
 		clock();
-		planets();
+		planets(glm::vec3(0.0f, 18.0f, -25.0f), 4.0f);
 
 	}
 	else if (mode == 4) //login
@@ -220,7 +222,7 @@ void Scene::groundSetup()
 	drawableObjects_.push_back(std::move(GroundObject));
 }
 
-void Scene::planets()
+void Scene::planets(glm::vec3 basePosition, float baseScale)
 {
 	static std::vector<float> sunData(sun, sun + sizeof(sun) / sizeof(float));
 	static std::vector<float> earthData(earth, earth + sizeof(earth) / sizeof(float));
@@ -233,12 +235,12 @@ void Scene::planets()
 	// Shared rotation around the Sun for Earth and Moon (later)
 	auto earthRotation = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.01f);
 	earthRotation->setRotationDirection(1);
-	auto earthDistTrans = std::make_shared<Translate>(glm::vec3(0.6f, 0.0f, 0.0f));
+	auto earthDistTrans = std::make_shared<Translate>(glm::vec3(0.6f * baseScale, 0.0f, 0.0f));
 
 	// Share rotation around the Sun for Earth and Moon
 	auto moonRotation = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.03f);
 	moonRotation->setRotationDirection(1);
-	auto moonDistTrans = std::make_shared<Translate>(glm::vec3(0.15f, 0.0f, 0.0f));
+	auto moonDistTrans = std::make_shared<Translate>(glm::vec3(0.15f * baseScale, 0.0f, 0.0f));
 
 	// Shared rotation around its own axis for all planets
 	auto axisRotation = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.05f);
@@ -248,7 +250,8 @@ void Scene::planets()
 	// 1. Sun (In the center. S1 R1)
 	auto sunObj = std::make_unique<DrawableObject>(*shaderPrograms_[2], sunModel);
 	auto sunTrans = std::make_shared<TransformationComposite>();
-	sunTrans->addTransformation(std::make_shared<Scale>(glm::vec3(0.2f)));
+	sunTrans->addTransformation(std::make_shared<Translate>(basePosition));
+	sunTrans->addTransformation(std::make_shared<Scale>(glm::vec3(0.2f * baseScale)));
 	sunTrans->addTransformation(axisRotation);
 	sunObj->setTransformation(sunTrans);
 	drawableObjects_.push_back(std::move(sunObj));
@@ -256,9 +259,10 @@ void Scene::planets()
 	//2. Earth R1 T1 S1 R2
 	auto earthObj = std::make_unique<DrawableObject>(*shaderPrograms_[2], earthModel);
 	auto earthTrans = std::make_shared<TransformationComposite>();
+	earthTrans->addTransformation(std::make_shared<Translate>(basePosition));
 	earthTrans->addTransformation(earthRotation);                           // R around Sun
 	earthTrans->addTransformation(earthDistTrans);                          // T from Sun
-	earthTrans->addTransformation(std::make_shared<Scale>(glm::vec3(0.1f)));
+	earthTrans->addTransformation(std::make_shared<Scale>(glm::vec3(0.1f * baseScale)));
 	earthTrans->addTransformation(axisRotation);                                 // R around its own axis
 	earthObj->setTransformation(earthTrans);
 	drawableObjects_.push_back(std::move(earthObj));
@@ -266,11 +270,12 @@ void Scene::planets()
 	// 3. Moon R1 T1 R2 T2 S1 R3
 	auto moonObj = std::make_unique<DrawableObject>(*shaderPrograms_[2], moonModel);
 	auto moonTrans = std::make_shared<TransformationComposite>();
+	moonTrans->addTransformation(std::make_shared<Translate>(basePosition));
 	moonTrans->addTransformation(earthRotation);                            // R from Sun (inherited from Earth)
 	moonTrans->addTransformation(earthDistTrans);                           // T from Earth
 	moonTrans->addTransformation(moonRotation);                             // R around Earth
 	moonTrans->addTransformation(moonDistTrans);                            // T from Earth
-	moonTrans->addTransformation(std::make_shared<Scale>(glm::vec3(0.02f)));
+	moonTrans->addTransformation(std::make_shared<Scale>(glm::vec3(0.02f * baseScale)));
 	moonTrans->addTransformation(axisRotation);                                  // R around its own axis
 	moonObj->setTransformation(moonTrans);
 	drawableObjects_.push_back(std::move(moonObj));
