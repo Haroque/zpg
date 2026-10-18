@@ -33,9 +33,9 @@ public:
 	void rotateCamera(float xpos, float ypos);
 	void render();
 
-	void signature();
+	void signature(glm::vec3 basePosition = glm::vec3(0.5f, -0.8f, 0.0f), float baseScale = 1.0f);
 	void planets(glm::vec3 basePosition = glm::vec3(0.0f), float baseScale = 1.0f);
-	void clock();
+	void clock(glm::vec3 basePosition = glm::vec3(0.5f, 0.8f, 0.0f), float baseScale = 1.0f);
 	void groundSetup();
 
 private:

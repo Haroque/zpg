@@ -60,7 +60,7 @@ void Scene::createShaders()
 
 	//Index 3: Tree shader
 	Shader treeVertexShader(GL_VERTEX_SHADER, "shaders/tree.vert");
-	Shader treeFragmentShader(GL_FRAGMENT_SHADER, "shaders/basic.frag");
+	Shader treeFragmentShader(GL_FRAGMENT_SHADER, "shaders/tree.frag");
     shaderPrograms_.push_back(std::make_unique<ShaderProgram>(
         std::move(treeVertexShader), std::move(treeFragmentShader)));
 
@@ -170,8 +170,10 @@ void Scene::createModels(int mode)
 			bushObj->setTransformation(trans);
 			drawableObjects_.push_back(std::move(bushObj));
 		}
-		clock();
+		clock(glm::vec3(-1.8f, 2.0f, 1.0f), 0.7f);
+		clock(glm::vec3(1.8f, 2.0f, 1.0f), 0.7f);
 		planets(glm::vec3(0.0f, 18.0f, -25.0f), 4.0f);
+		signature(glm::vec3(0.0f, 1.8f, 1.0f), 0.5f);
 
 	}
 	else if (mode == 4) //login
@@ -282,34 +284,36 @@ void Scene::planets(glm::vec3 basePosition, float baseScale)
 
 }
 
-void Scene::clock()
+void Scene::clock(glm::vec3 basePosition, float baseScale)
 {
 	static std::vector<float> Clockdata(clockModel, clockModel + sizeof(clockModel) / sizeof(float));
 	static Model ClockModel(Clockdata, static_cast<int>(Clockdata.size() / 9), GL_TRIANGLES);
 
 	auto ClockObject = std::make_unique<DrawableObject>(*shaderPrograms_[4], ClockModel);
 
-	auto comp = std::make_shared<TransformationComposite>();
-	comp->addTransformation(std::make_shared<Translate>(glm::vec3(0.0f, 1.5f, 0.0f)));
-	comp->addTransformation(std::make_shared<Rotate>(glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f));
-	comp->addTransformation(std::make_shared<Scale>(glm::vec3(-0.5f, 0.5f, 0.5f)));
+	auto composite = std::make_shared<TransformationComposite>();
+	composite->addTransformation(std::make_shared<Translate>(basePosition));
+	composite->addTransformation(std::make_shared<Scale>(glm::vec3(baseScale)));
+	composite->addTransformation(std::make_shared<Rotate>(glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f));
 
-	ClockObject->setTransformation(comp);
+	composite->addTransformation(std::make_shared<Scale>(glm::vec3(-0.5f * baseScale, 0.5f * baseScale, 0.5f * baseScale)));
+
+	ClockObject->setTransformation(composite);
 	drawableObjects_.push_back(std::move(ClockObject));
 }
 
-void Scene::signature()
+void Scene::signature(glm::vec3 basePosition, float baseScale)
 {
 	static std::vector<float> LoginData(login, login + sizeof(login) / sizeof(float));
 	static Model LoginModel(LoginData, static_cast<int>(LoginData.size() / 6), GL_TRIANGLES);
 
 	auto LoginObject = std::make_unique<DrawableObject>(*shaderPrograms_[1], LoginModel);
-
 	auto composite = std::make_shared<TransformationComposite>();
-	composite->addTransformation(std::make_shared<Translate>(glm::vec3(0.5f, -0.8f, 0.0f)));
-	composite->addTransformation(std::make_shared<Scale>(glm::vec3(0.1f)));
-	LoginObject->setTransformation(composite);
 
+	composite->addTransformation(std::make_shared<Translate>(basePosition));
+	composite->addTransformation(std::make_shared<Scale>(glm::vec3(baseScale)));
+
+	LoginObject->setTransformation(composite);
 	drawableObjects_.push_back(std::move(LoginObject));
 }
 

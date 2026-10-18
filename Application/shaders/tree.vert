@@ -15,18 +15,15 @@ out vec3 vertexColor;
 
 void main()
 {
-    vec4 wp = modelMatrix * vec4(vp, 1.0);
-    worldPosition = wp.xyz / wp.w;
-    worldNormal = mat3(modelMatrix) * cn;
+    worldNormal = mat3(transpose(inverse(modelMatrix))) * cn;
 
     //3.x id position in matrix, frac return the decimal value 
-    float variace = fract(abs(modelMatrix[3].x));
-    float colorOffset = 0.7 + variace * 0.5; //from 0.7 to 1.2
+    float colorOffset = 0.7 + fract(abs(modelMatrix[3].x)) * 0.5; //from 0.7 to 1.2
 
     if (gl_VertexID > 36443)
-        vertexColor = vec3(0.0, 1.0, 0.0) * colorOffset; // green
+        vertexColor = vec3(0.0, 0.8, 0.0) * colorOffset; // green
     else
-        vertexColor = vec3(0.35, 0.22, 0.19) * colorOffset; // red/brown
+        vertexColor = vec3(0.35, 0.22, 0.15) * colorOffset; // brown
 
-    gl_Position = projectionMatrix * viewMatrix * wp;
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vp, 1.0);
 }

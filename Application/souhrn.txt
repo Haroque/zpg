@@ -1,10 +1,19 @@
 1. Splněno - V třídě Camera se počítá pohledová matice pomocí glm::lookAt(eye, eye + target, up) a projekční pomocí glm::perspective.
             Posílá se viewMatrix a projectionMatrix do shaderů.
 
-2. Splněno - Nyní se lze po lese pohybovat pomosí wsad, stromy mají náhodné velikosti, odstíny zelené a hnědé a jejich rotaci. Kurzor není uzamknut.
+2. Splněno - Nyní se lze po lese pohybovat pomosí wsad (keyCallback()) a předávají se kameře, pohybuje se pomocích kolmých vektorů.
+            Rozhlížení myší v cursorPosCallback(), kamera se otáčí na rozdílu pozic Y = xpos - lastMouseX, Y = ypos - lastMouseY.
+            V tree.vert se odděluje na základě vrcholů a vykresluje se barva, odstíny se řeší získáním desetinného čísla pozicové části matice.
 
-3. Splněno - 
 
-4. Splněno - 
+3. Splněno - Model hodin je vykreslen jedním voláním glDrawArrays(drawMode_, 0, vertexCount_) v Model::draw(). 
+            Ve vertex shaderu clock.vert se podle barvy vrcholů vertexColorIn rozlišují ručičky a logo: zelená (G > 0.5, R < 0.3) 
+            pro minuty s úhlem minAngle, modrá (B > 0.5, R < 0.3) pro hodiny s hourAngle, červená (R > 0.5, G < 0.3) pro vteřiny se secAngle 
+            a žlutá pro logo přebarvené na (vec3(5.0/255.0, 195.0/255.0, 222.0/255.0)). Rotace ručiček v rovině X-Y se provádí pomocí 2D matice mat2(c, s, -s, c), ciferník zůstává statický.
+
+4. Splněno - Do lesa byli přidány 2 modely hodin, login, scéna s planetami a model hlíny, vygenerovaný pomocí AI.
+            Aby nedošlo k zploštění hodin do elipsy, je použito díky TransformationComposite použito rovnoměrné škálování. 
+            |s_x| = |-0.5 * baseScale| = 0.5 * baseScale, s_y = 0.5 * baseScale, s_z = 0.5 * baseScale 
 
 5. Splněno - Byla vytvořena třída Observer, ze kterého dědí ShaderProgram a třída Subject, ze které dědí Camera.
+            Na všechny shadery se připojí kamera attach(), pokud se kamera pohne, pomocí notifyAll() se updatuje.
