@@ -43,6 +43,9 @@ void Application::initialization()
     glfwSetKeyCallback(window_, keyCallback);
     glfwSetWindowSizeCallback(window_, windowSizeCallback);
 
+    glfwSetMouseButtonCallback(window_, mouseCallback);
+    glfwSetCursorPosCallback(window_, cursorPosCallback);
+
     if (!gladLoadGL((GLADloadfunc)glfwGetProcAddress))
         std::exit(EXIT_FAILURE);
 
@@ -154,4 +157,40 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
 void Application::windowSizeCallback(GLFWwindow*, int width, int height)
 {
     glViewport(0, 0, width, height); 
+}
+
+void  Application::mouseCallback(GLFWwindow* window, int button, int action, int mods)
+{
+	Application* application = static_cast<Application*>(glfwGetWindowUserPointer(window));
+	if (button == GLFW_MOUSE_BUTTON_RIGHT)
+	{
+        if (action == GLFW_PRESS)
+        {
+            application->rightMouseButtonPressed_ = true;
+            glfwGetCursorPos(window, &application->lastMouseX_, &application->lastMouseY_);
+        }
+        else if (action == GLFW_RELEASE)
+        {
+            application->rightMouseButtonPressed_ = false;
+        }
+	}
+}
+void Application::cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
+{
+    Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
+    if (!app || !app->rightMouseButtonPressed_)
+        return;
+
+	//difference between current and last mouse position !
+    float deltaX = static_cast<float>(xpos - app->lastMouseX_);
+    float deltaY = static_cast<float>(ypos - app->lastMouseY_);
+
+    app->lastMouseX_ = xpos;
+    app->lastMouseY_ = ypos;
+    app->rotateCamera(deltaX, deltaY);
+}
+void Application::rotateCamera(float xpos, float ypos)
+{
+    if (scene_)
+        scene_->rotateCamera(xpos, ypos);
 }

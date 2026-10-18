@@ -150,6 +150,7 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Subject.cpp" />
     <ClCompile Include="Transformation.cpp" />
     <ClCompile Include="TransformationComposite.cpp" />
     <ClCompile Include="TransformationLeaf.cpp" />
@@ -175,9 +176,11 @@
     <ClInclude Include="Models\suzi_flat.h" />
     <ClInclude Include="Models\suzi_smooth.h" />
     <ClInclude Include="Models\tree.h" />
+    <ClInclude Include="Observer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="Subject.h" />
     <ClInclude Include="Transformation.h" />
     <ClInclude Include="TransformationComposite.h" />
     <ClInclude Include="TransformationLeaf.h" />

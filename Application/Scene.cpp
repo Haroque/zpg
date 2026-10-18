@@ -29,6 +29,8 @@
 #include "Models/sun.h"
 #include "Models/earth.h"
 #include "Models/clock.h"
+#include "Models/ground.h"
+
 #include <GLFW/glfw3.h>
 #include <glm/gtc/constants.hpp>
 
@@ -68,8 +70,23 @@ void Scene::createShaders()
     shaderPrograms_.push_back(std::make_unique<ShaderProgram>(
         std::move(clockVertexShader), std::move(clockFragmentShader)));
 
+	//Index 5: Ground shader
+	Shader BrownVertexShader(GL_VERTEX_SHADER, "shaders/basic.vert");
+	Shader BrownFragmentShader(GL_FRAGMENT_SHADER, "shaders/ground.frag");
+	shaderPrograms_.push_back(std::make_unique<ShaderProgram>(
+		std::move(BrownVertexShader), std::move(BrownFragmentShader)));
+
 	if (!camera_ && !shaderPrograms_.empty())
-		camera_ = std::make_unique<Camera>(shaderPrograms_.front().get());
+	{
+		camera_ = std::make_unique<Camera>();
+
+		// registration all to camera observer
+		for (auto& program : shaderPrograms_)
+		{
+			program->setCamera(camera_.get());
+			camera_->attach(program.get()); 
+		}
+	}
 }
 
 void Scene::createModels(int mode)
@@ -113,7 +130,7 @@ void Scene::createModels(int mode)
 	}
 	else if(mode == 3)
 	{
-		
+		groundSetup();
 		static std::vector<float> treeData(tree, tree + sizeof(tree) / sizeof(float));
 		static std::vector<float> bushData(bushes, bushes + sizeof(bushes) / sizeof(float));
 		static Model treeModel(treeData, static_cast<int>(treeData.size() / 6), GL_TRIANGLES);
@@ -187,6 +204,21 @@ void Scene::createModels(int mode)
 		clock();
 	}
 }
+void Scene::groundSetup()
+{
+	static std::vector<float> GroundData(ground, ground + sizeof(ground) / sizeof(float));
+	static Model GroundModel(GroundData, static_cast<int>(GroundData.size() / 6), GL_TRIANGLES);
+
+	auto GroundObject = std::make_unique<DrawableObject>(*shaderPrograms_[5], GroundModel);
+	auto comp = std::make_shared<TransformationComposite>();
+
+	comp->addTransformation(std::make_shared<Translate>(glm::vec3(0.0f, -0.05f, 0.0f)));
+	comp->addTransformation(std::make_shared<Rotate>(-glm::half_pi<float>(), glm::vec3(1.0f, 0.0f, 0.0f), 0.0f));
+	comp->addTransformation(std::make_shared<Scale>(glm::vec3(30.0f, 30.0f, 1.0f)));
+
+	GroundObject->setTransformation(comp);
+	drawableObjects_.push_back(std::move(GroundObject));
+}
 
 void Scene::planets()
 {
@@ -253,10 +285,10 @@ void Scene::clock()
 	auto ClockObject = std::make_unique<DrawableObject>(*shaderPrograms_[4], ClockModel);
 
 	auto comp = std::make_shared<TransformationComposite>();
-	comp->addTransformation(std::make_shared<Translate>(glm::vec3(0.0f, 0.0f, 0.0f)));
-
+	comp->addTransformation(std::make_shared<Translate>(glm::vec3(0.0f, 1.5f, 0.0f)));
 	comp->addTransformation(std::make_shared<Rotate>(glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f));
-	comp->addTransformation(std::make_shared<Scale>(glm::vec3(0.5f)));
+	comp->addTransformation(std::make_shared<Scale>(glm::vec3(-0.5f, 0.5f, 0.5f)));
+
 	ClockObject->setTransformation(comp);
 	drawableObjects_.push_back(std::move(ClockObject));
 }
@@ -312,15 +344,6 @@ void Scene::setRotationDirection(int direction)
 
 void Scene::render()
 {
-	if (camera_)
-	{
-		for (auto& shader : shaderPrograms_)
-		{
-			if (shader)
-				camera_->updateShaderProgram(*shader);
-		}
-	}
-
 	for (auto& obj : drawableObjects_)
 	{
 		if (obj)
@@ -349,4 +372,10 @@ void Scene::moveCamera(int direction)
 	default:
 		break;
 	}
+}
+
+void Scene::rotateCamera(float xpos, float ypos)
+{
+	if (camera_)
+		camera_->onMouseMove(xpos, ypos);
 }

@@ -20,10 +20,12 @@ public:
 	void createModels(int mode=1);
 	void setScene(int mode);
 	int run();
-
 	void setRotationDirection(int direction);
-
 	void moveCamera(int direction);
+
+	static void mouseCallback(GLFWwindow* window, int button, int action, int mods);
+	static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos);
+	void rotateCamera(float xpos, float ypos);
 
 private:
 	static void errorCallback(int error, const char* description);
@@ -32,4 +34,9 @@ private:
 
 	GLFWwindow* window_ = nullptr;
 	Scene* scene_ = nullptr;
+
+	bool rightMouseButtonPressed_ = false;
+	double lastMouseX_ = 0.0;
+	double lastMouseY_ = 0.0;
+
 };

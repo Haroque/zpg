@@ -30,11 +30,13 @@ public:
 
 	void setRotationDirection(int direction);
 	void moveCamera(int direction);
+	void rotateCamera(float xpos, float ypos);
 	void render();
 
 	void signature();
 	void planets();
 	void clock();
+	void groundSetup();
 
 private:
 	vector<unique_ptr<ShaderProgram>> shaderPrograms_;

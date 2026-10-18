@@ -10,11 +10,13 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 #include <string>
+#include <vector>
 
 #include "Shader.h"
+#include "Observer.h"
 class Camera;
 
-class ShaderProgram
+class ShaderProgram : public Observer
 {
 public:
 	ShaderProgram(Shader vertexShader, Shader fragmentShader);
@@ -32,17 +34,19 @@ public:
 	// transformation in projection space
 	void setUniform(const GLchar* name, const glm::mat4 matrix) const;
 
-	ShaderProgram(Camera* camera);
-	void method();
+	//ShaderProgram(Camera* camera);
+	void setCamera(const Camera* camera);
+	void notify() override;
 	
 	
 	
 
 private:
-	Camera* m_camera;
+	const Camera* camera_ = nullptr;
 
 	GLuint id = 0;
 	Shader vertexShader_;
 	Shader fragmentShader_;
 	GLuint getId() const { return id; }
+
 };

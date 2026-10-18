@@ -1,17 +1,19 @@
 #pragma once
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
+#include "Subject.h"
 
 class ShaderProgram;
 
-class Camera
+
+class Camera : public Subject
 {
 public:
-    Camera(ShaderProgram* shaderProgram);
+    Camera(ShaderProgram* shaderProgram = nullptr);
 	glm::mat4 getCamera(void);
 
 	void updateShaderProgram(ShaderProgram& shaderProgram);
-	void updateTarget();
+	
 
 	glm::mat4 getViewMatrix() const;
 	glm::mat4 getProjectionMatrix() const;
@@ -21,7 +23,9 @@ public:
 	void moveLeft(float speed);
 	void moveRight(float speed);
 
+	
 
+	void onMouseMove(float X, float Y);
 
 private: 
 	ShaderProgram* shaderProgram_;
@@ -37,7 +41,9 @@ private:
 	float alpha;
 	float phi;
 
-	float speed = 0.1;
+	float speed = 0.5f;
+
+	void updateTarget();
 
 };
 

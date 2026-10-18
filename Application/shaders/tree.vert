@@ -15,12 +15,15 @@ void main()
 {
     vec4 wp = modelMatrix * vec4(vp, 1.0);
     worldPosition = wp.xyz / wp.w;
-
     worldNormal = mat3(modelMatrix) * cn;
+
+    //
+    float rnd = sin(modelMatrix[3].x + modelMatrix[3].z);
+
     if (gl_VertexID > 36443)
-        vertexColor = vec3(0.0, 1.0, 0.0); // greed
+        vertexColor = vec3(0.0, 1.0, 0.0); // green
     else
-        vertexColor = vec3(1.0, 0.0, 0.0); // red/brown
+        vertexColor = vec3(0.35, 0.22, 0.19); // red/brown
 
     gl_Position = projectionMatrix * viewMatrix * wp;
 }

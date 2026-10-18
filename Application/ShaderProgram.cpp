@@ -6,6 +6,7 @@
  */
 
 #include "ShaderProgram.h"
+#include "Camera.h"
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
@@ -89,4 +90,21 @@ void ShaderProgram::setUniform(const GLchar* name, const glm::mat4 matrix) const
 	GLint location = uniformLocation(name);
 	if (location != -1)
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
+void ShaderProgram::setCamera(const Camera* camera)
+{
+	camera_ = camera;
+	if (camera)
+		notify();
+}
+
+void ShaderProgram::notify()
+{
+	if (camera_ && id != 0)
+	{
+		use();
+		setUniform("viewMatrix", camera_->getViewMatrix());
+		setUniform("projectionMatrix", camera_->getProjectionMatrix());
+	}
 }
