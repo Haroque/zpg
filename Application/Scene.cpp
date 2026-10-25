@@ -362,8 +362,8 @@ void Scene::planetsScene(glm::vec3 position, glm::vec3 scale, float rotationAngl
 
 	
 }
-
-void Scene::spaceGunScene(glm::vec3 position, glm::vec3 scale, float rotationAngle, glm::vec3 rotationAxis, float rotationSpeed, int shaderIndex)
+/*
+void Scene::alienScene(glm::vec3 position, glm::vec3 scale, float rotationAngle, glm::vec3 rotationAxis, float rotationSpeed, int shaderIndex)
 {
 	static std::vector<float> spaceGunData(space_gun, space_gun + sizeof(space_gun) / sizeof(float));
 	static Model spaceGunModel(spaceGunData, static_cast<int>(spaceGunData.size() / 9), GL_TRIANGLES);
@@ -376,7 +376,7 @@ void Scene::spaceGunScene(glm::vec3 position, glm::vec3 scale, float rotationAng
 
 	drawableObjects_.push_back(std::move(spaceGunObj));
 
-}
+}*/
 
 void Scene::clearModels()
 {

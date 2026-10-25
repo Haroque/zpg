@@ -21,18 +21,41 @@ Model::Model(const std::vector<float>& vertices, int vertexCount, GLenum drawMod
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject_);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
-	int perVertexSize = static_cast<int>(vertices.size() / vertexCount_);
-    
+    int perVertexSize = static_cast<int>(vertices.size() / vertexCount_);
+    GLsizei stride = perVertexSize * sizeof(float);
+
+	// 1. position attribute
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, perVertexSize * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
 
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, perVertexSize * sizeof(float), (void*)(3 * sizeof(float)));
-
-    if (perVertexSize >= 9)
+    if (perVertexSize == 6)
     {
+        // 2. normal attribute
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)));
+
+		//Default color attribute (white) for models without color data
+        glDisableVertexAttribArray(2);
+        glVertexAttrib3f(2, 1.0f, 1.0f, 1.0f); 
+    }
+    else if (perVertexSize >= 9)
+    {
+		//If the length is approximately 1, it's likely a normal; if it's not, it's likely a color.
+		// count the length squared of the vector at offset 3, 4, 5
+        float lenSq = vertices[3] * vertices[3] + vertices[4] * vertices[4] + vertices[5] * vertices[5];
+		bool hasNormalFirst = (lenSq > 0.8f && lenSq < 1.2f);
+
+		// Set offsets based on the order of normal and color attributes
+        int normalOffset = hasNormalFirst ? 3 : 6;
+        int colorOffset = hasNormalFirst ? 6 : 3;
+
+        // 1: normal
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(normalOffset * sizeof(float)));
+
+        // 2: color
         glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, perVertexSize * sizeof(float), (void*)(6 * sizeof(float)));
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, (void*)(colorOffset * sizeof(float)));
     }
 
 	glBindVertexArray(0); 
