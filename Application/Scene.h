@@ -98,7 +98,7 @@ public:
         float rotationSpeed = 0.05f,
         int shaderIndex = 6);
 
-	void spaceGunScene(glm::vec3 position = glm::vec3(0.0f),
+	void alienScene(glm::vec3 position = glm::vec3(0.0f),
 		glm::vec3 scale = glm::vec3(1.0f),
 		float rotationAngle = 0.0f,
 		glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),

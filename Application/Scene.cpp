@@ -31,6 +31,7 @@
 #include "Models/clock.h"
 #include "Models/ground.h"
 #include "Models/space_gun.h"
+#include "Models/octopus.h"
 
 #include <GLFW/glfw3.h>
 #include <glm/gtc/constants.hpp>
@@ -61,6 +62,8 @@ void Scene::createShaders()
 
 	//Index 6: Ambient
 	createShaderProgram("shaders/basic.vert", "shaders/ambient.frag");
+	shaderPrograms_[6]->use();
+	shaderPrograms_[6]->setUniform("ambientLight", glm::vec3(1.0f, 1.0f, 1.0f));
 
 	//Index 7: Lambert - Diffuse
 	createShaderProgram("shaders/basic.vert", "shaders/diffuse.frag");
@@ -72,10 +75,11 @@ void Scene::createShaders()
 	createShaderProgram("shaders/basic.vert", "shaders/blinn-phong.frag");
 
 	glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);    
-	glm::vec3 ambientLight = glm::vec3(0.2f, 0.2f, 0.2f);  
+	glm::vec3 ambientLight = glm::vec3(0.2f, 0.2f, 0.2f);
 	glm::vec3 lightPosition = glm::vec3(0.0f, 0.0f, 0.0f);  
 
-	for (size_t idx = 6; idx <= 9 && idx < shaderPrograms_.size(); ++idx)
+
+	for (size_t idx = 7; idx <= 9 && idx < shaderPrograms_.size(); ++idx)
 	{
 		shaderPrograms_[idx]->use();
 		shaderPrograms_[idx]->setUniform("lightColor", lightColor);
@@ -157,7 +161,11 @@ void Scene::createModels(int mode)
 	}
 	else if (mode == 6)
 	{
-		planetsScene();
+		glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 scale = glm::vec3(3.0f);
+
+		planetsScene(center, scale);
+		alienScene(center, scale, 0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.01f, 8);
 	}
 
 	else if(mode == 7)
@@ -359,24 +367,62 @@ void Scene::planetsScene(glm::vec3 position, glm::vec3 scale, float rotationAngl
 	moonTrans->addTransformation(axisRotation);
 	moonObj->setTransformation(moonTrans);
 	drawableObjects_.push_back(std::move(moonObj));
-
-	
 }
-/*
+
 void Scene::alienScene(glm::vec3 position, glm::vec3 scale, float rotationAngle, glm::vec3 rotationAxis, float rotationSpeed, int shaderIndex)
 {
+	static std::vector<float> alienData(octopus, octopus + sizeof(octopus) / sizeof(float));
+	static Model alienModel(alienData, static_cast<int>(alienData.size() / 9), GL_TRIANGLES);
 	static std::vector<float> spaceGunData(space_gun, space_gun + sizeof(space_gun) / sizeof(float));
 	static Model spaceGunModel(spaceGunData, static_cast<int>(spaceGunData.size() / 9), GL_TRIANGLES);
 
-	auto spaceGunObj = std::make_unique<DrawableObject>(*shaderPrograms_[shaderIndex], spaceGunModel);
-	auto composite = std::make_shared<TransformationComposite>();
-	composite->addTransformation(std::make_shared<Translate>(position));
-	composite->addTransformation(std::make_shared<Rotate>(glm::pi<float>() + rotationAngle, rotationAxis, rotationSpeed));
-	composite->addTransformation(std::make_shared<Scale>(glm::vec3(-0.5f * scale.x, 0.5f * scale.y, 0.5f * scale.z)));
+	auto alienOrbitRotation = std::make_shared<Rotate>(rotationAngle, rotationAxis, 0.005f);
+	alienOrbitRotation->setRotationDirection(1);
+	auto alienOrbitDist = std::make_shared<Translate>(glm::vec3(3.0f * scale.x, 0.0f, 0.0f));
 
+	//octopus self rotation
+	auto alienSelfRotation = std::make_shared<Rotate>(rotationAngle, rotationAxis, rotationSpeed);
+	alienSelfRotation->setRotationDirection(1);
+
+	// rotation of the gun around the alien
+	auto gunOrbitRotation = std::make_shared<Rotate>(rotationAngle, rotationAxis, 0.025f);
+	gunOrbitRotation->setRotationDirection(1);
+	auto gunOrbitDist = std::make_shared<Translate>(glm::vec3(1.0f * scale.x, 0.3f, 0.0f));
+
+	// gun rotation around its own axis
+	auto gunSelfRotation = std::make_shared<Rotate>(glm::pi<float>() + rotationAngle, rotationAxis, rotationSpeed * 2.0f);
+	gunSelfRotation->setRotationDirection(1);
+
+
+	auto alienObj = std::make_unique<DrawableObject>(*shaderPrograms_[shaderIndex], alienModel);
+	auto alienComposite = std::make_shared<TransformationComposite>();
+
+	alienComposite->addTransformation(std::make_shared<Translate>(position)); 
+	alienComposite->addTransformation(alienOrbitRotation);
+	alienComposite->addTransformation(alienOrbitDist);
+	alienComposite->addTransformation(alienSelfRotation); 
+
+	alienComposite->addTransformation(std::make_shared<Rotate>(-glm::half_pi<float>(), glm::vec3(1.0f, 0.0f, 0.0f), 0.0f));
+	alienComposite->addTransformation(std::make_shared<Scale>(glm::vec3(0.7f) * scale));
+
+	alienObj->setTransformation(alienComposite);
+	drawableObjects_.push_back(std::move(alienObj));
+
+	auto spaceGunObj = std::make_unique<DrawableObject>(*shaderPrograms_[shaderIndex], spaceGunModel);
+	auto gunComposite = std::make_shared<TransformationComposite>();
+
+	gunComposite->addTransformation(std::make_shared<Translate>(position));
+	gunComposite->addTransformation(alienOrbitRotation);
+	gunComposite->addTransformation(alienOrbitDist);
+	gunComposite->addTransformation(gunOrbitRotation); 
+	gunComposite->addTransformation(gunOrbitDist);
+	gunComposite->addTransformation(gunSelfRotation);
+	gunComposite->addTransformation(std::make_shared<Scale>(glm::vec3(0.12f) * scale));
+
+	spaceGunObj->setTransformation(gunComposite);
 	drawableObjects_.push_back(std::move(spaceGunObj));
 
-}*/
+}
 
 void Scene::clearModels()
 {
