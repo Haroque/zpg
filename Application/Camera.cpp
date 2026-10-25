@@ -39,9 +39,6 @@ void Camera::updateTarget()
 	target = glm::normalize(target);
 }
 
-glm::mat4 Camera::getCamera(void) {
-	return glm::lookAt(eye, eye + target, up);
-}
 
 glm::mat4 Camera::getViewMatrix() const
 {
@@ -100,5 +97,11 @@ void Camera::onMouseMove(float X, float Y)
 		alpha = glm::pi<float>() - 0.1f;
 
 	updateTarget();
+	notifyAll();
+}
+
+void Camera::setAspectRatio(float aspectRatio)
+{
+	aspect = aspectRatio;
 	notifyAll();
 }

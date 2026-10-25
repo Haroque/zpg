@@ -26,6 +26,7 @@ void DrawableObject::update()
 void DrawableObject::draw() 
 {
 	shaderProgram_.use();
+	// Identity matrix as default model matrix
 	glm::mat4 modelMatrix= glm::mat4(1.0f);
 
 	if (transformation_) {
@@ -33,6 +34,7 @@ void DrawableObject::draw()
 	}
 
 	shaderProgram_.setUniform("modelMatrix", modelMatrix);
+	shaderProgram_.setUniform("shininess", shininess_);
 
 	model_.draw();
 }

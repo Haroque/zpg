@@ -8,10 +8,10 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
 
 #include "Camera.h"
-
-using namespace std;
 
 class DrawableObject;
 class ShaderProgram;
@@ -33,13 +33,82 @@ public:
 	void rotateCamera(float xpos, float ypos);
 	void render();
 
-	void signature(glm::vec3 basePosition = glm::vec3(0.5f, -0.8f, 0.0f), float baseScale = 1.0f);
-	void planets(glm::vec3 basePosition = glm::vec3(0.0f), float baseScale = 1.0f);
-	void clock(glm::vec3 basePosition = glm::vec3(0.5f, 0.8f, 0.0f), float baseScale = 1.0f);
-	void groundSetup();
+    void windowResize(int width, int height);
+
+    void triangleScene(glm::vec3 position = glm::vec3(0.5f, 0.0f, 0.0f),
+        glm::vec3 scale = glm::vec3(1.0f),
+        float rotationAngle = 0.0f,
+        glm::vec3 rotationAxis = glm::vec3(0.0f, 0.0f, 1.0f),
+        float rotationSpeed = 0.02f,
+        int shaderIndex = 2);
+
+    void squareScene(glm::vec3 position = glm::vec3(0.0f),
+        glm::vec3 scale = glm::vec3(1.0f),
+        float rotationAngle = 0.0f,
+        glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),
+        float rotationSpeed = 0.0f,
+        int shaderIndex = 2);
+
+    void sphereScene(glm::vec3 position = glm::vec3(0.0f),
+        glm::vec3 scale = glm::vec3(1.0f),
+        float rotationAngle = 0.0f,
+        glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),
+        float rotationSpeed = 0.0f,
+        int shaderIndex = 6);
+
+    void treeScene(glm::vec3 position = glm::vec3(0.0f),
+        glm::vec3 scale = glm::vec3(1.0f),
+        float rotationAngle = 0.0f,
+        glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),
+        float rotationSpeed = 0.0f,
+        int shaderIndex = 6);
+
+    void bushScene(glm::vec3 position = glm::vec3(0.0f),
+        glm::vec3 scale = glm::vec3(1.0f),
+        float rotationAngle = 0.0f,
+        glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),
+        float rotationSpeed = 0.0f,
+        int shaderIndex = 3);
+
+    void signatureScene(glm::vec3 position = glm::vec3(0.5f, -0.8f, 0.0f),
+        glm::vec3 scale = glm::vec3(1.0f),
+        float rotationAngle = 0.0f,
+        glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),
+        float rotationSpeed = 0.0f,
+        int shaderIndex = 1);
+
+    void clockScene(glm::vec3 position = glm::vec3(0.5f, 0.8f, 0.0f),
+        glm::vec3 scale = glm::vec3(1.0f),
+        float rotationAngle = 0.0f,
+        glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),
+        float rotationSpeed = 0.0f,
+        int shaderIndex = 4);
+
+    void groundScene(glm::vec3 position = glm::vec3(0.0f, -0.05f, 0.0f),
+        glm::vec3 scale = glm::vec3(30.0f, 30.0f, 1.0f),
+        float rotationAngle = -glm::half_pi<float>(),
+        glm::vec3 rotationAxis = glm::vec3(1.0f, 0.0f, 0.0f),
+        float rotationSpeed = 0.0f,
+        int shaderIndex = 5);
+
+    void planetsScene(glm::vec3 position = glm::vec3(0.0f),
+        glm::vec3 scale = glm::vec3(1.0f),
+        float rotationAngle = 0.0f,
+        glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),
+        float rotationSpeed = 0.05f,
+        int shaderIndex = 6);
+
+	void spaceGunScene(glm::vec3 position = glm::vec3(0.0f),
+		glm::vec3 scale = glm::vec3(1.0f),
+		float rotationAngle = 0.0f,
+		glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),
+		float rotationSpeed = 0.05f,
+		int shaderIndex = 6);
 
 private:
-	vector<unique_ptr<ShaderProgram>> shaderPrograms_;
-	vector<unique_ptr<DrawableObject>> drawableObjects_;
-	unique_ptr<Camera> camera_;
+	std::vector<std::unique_ptr<ShaderProgram>> shaderPrograms_;
+	std::vector<std::unique_ptr<DrawableObject>> drawableObjects_;
+	std::unique_ptr<Camera> camera_;
+
+	void createShaderProgram(const char* vertexPath, const char* fragmentPath);
 };

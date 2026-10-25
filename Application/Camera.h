@@ -10,7 +10,6 @@ class Camera : public Subject
 {
 public:
     Camera(ShaderProgram* shaderProgram = nullptr);
-	glm::mat4 getCamera(void);
 
 	void updateShaderProgram(ShaderProgram& shaderProgram);
 	
@@ -24,8 +23,10 @@ public:
 	void moveRight(float speed);
 
 	
-
+	void setAspectRatio(float aspectRatio);
 	void onMouseMove(float X, float Y);
+
+	glm::vec3 getEye() const { return eye; }
 
 private: 
 	ShaderProgram* shaderProgram_;

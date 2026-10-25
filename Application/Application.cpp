@@ -9,6 +9,7 @@
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <cassert>
 
 #include "Application.h"
 #include "Scene.h"
@@ -17,7 +18,6 @@ Application::Application() = default;
 
 Application::~Application()
 {
-    delete scene_;
     if (window_)
         glfwDestroyWindow(window_);
     glfwTerminate();
@@ -61,14 +61,14 @@ void Application::initialization()
 void Application::createShaders()
 {
     if (!scene_)
-        scene_ = new Scene();
+        scene_ = std::make_unique<Scene>();
     scene_->createShaders();
 }
 
 void Application::createModels(int mode)
 {
     if (!scene_)
-        scene_ = new Scene();
+        scene_ = std::make_unique<Scene>();
     scene_->createModels(mode);
 }
 
@@ -122,7 +122,8 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
     if (action == GLFW_PRESS || action == GLFW_REPEAT)
     {
         Application* application = static_cast<Application*>(glfwGetWindowUserPointer(window));
-    
+        assert(application && "Application pointer is null in keyCallback");
+
         if (key == GLFW_KEY_UP)
         {
             application->setRotationDirection(-1);
@@ -154,9 +155,25 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
     }
 }
 
-void Application::windowSizeCallback(GLFWwindow*, int width, int height)
+void Application::windowResize(int width, int height)
 {
-    glViewport(0, 0, width, height); 
+    if (scene_)
+        scene_->windowResize(width, height);
+}
+
+
+void Application::windowSizeCallback(GLFWwindow* window, int width, int height)
+{
+    if (height == 0)
+        height = 1;
+
+    glViewport(0, 0, width, height);
+
+    Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
+    if (app)
+    {
+        app->windowResize(width, height);
+    }
 }
 
 void  Application::mouseCallback(GLFWwindow* window, int button, int action, int mods)

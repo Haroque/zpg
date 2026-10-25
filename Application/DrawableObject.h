@@ -25,6 +25,10 @@ public:
 	void setRotationDirection(int direction);
 	void setTransformation(std::shared_ptr<Transformation> transformation) { transformation_ = transformation; }
 
+	void setMaterial(float shininess)
+	{
+		shininess_ = shininess;
+	}
 
 private:
 	ShaderProgram& shaderProgram_;
@@ -32,4 +36,6 @@ private:
 
 	std::shared_ptr<Transformation> transformation_ = nullptr;
 
+	//default value
+	float shininess_ = 32.0f;
 };

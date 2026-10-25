@@ -40,6 +40,7 @@ bool ShaderProgram::setShaderProgram()
 		id = 0;
 		return false;
 	}
+
 	return true;
 }
 
@@ -57,8 +58,6 @@ void ShaderProgram::use() const
 GLint ShaderProgram::uniformLocation(const GLchar* name) const
 {
 	GLint location = glGetUniformLocation(id, name);
-	if (location == -1)
-		std::cerr << "Uniform '" << name << "' not found in ShaderProgram.\n";
 	return location;
 }
 
@@ -106,5 +105,6 @@ void ShaderProgram::notify()
 		use();
 		setUniform("viewMatrix", camera_->getViewMatrix());
 		setUniform("projectionMatrix", camera_->getProjectionMatrix());
+		setUniform("cameraPosition", camera_->getEye());
 	}
 }

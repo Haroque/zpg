@@ -1,7 +1,8 @@
 #version 330 core
 
 layout (location = 0) in vec3 vp;
-layout (location = 1) in vec3 cn; 
+layout (location = 1) in vec3 cn;
+layout (location = 2) in vec3 inColor;
 
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
@@ -14,10 +15,8 @@ out vec3 vertexColor;
 void main()
 {
     vec4 wp = modelMatrix * vec4(vp, 1.0);
-    worldPosition = wp.xyz / wp.w;
-    worldNormal = mat3(modelMatrix) * cn;
-
-    vertexColor = cn; 
-
+    worldPosition = wp.xyz;
+    worldNormal = mat3(transpose(inverse(modelMatrix))) * cn;
+    vertexColor = inColor;
     gl_Position = projectionMatrix * viewMatrix * wp;
 }
