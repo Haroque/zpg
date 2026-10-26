@@ -19,7 +19,7 @@ void main()
     vec3 lightDir = normalize(lightPosition - worldPosition);
     vec3 viewDir = normalize(cameraPosition - worldPosition);
 
-    // 1. ambient par
+    // 1. ambient part
     vec3 ambient = ambientLight * vertexColor;
 
     // 2. lambert part

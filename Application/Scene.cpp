@@ -165,7 +165,7 @@ void Scene::createModels(int mode)
 		glm::vec3 scale = glm::vec3(3.0f);
 
 		planetsScene(center, scale);
-		alienScene(center, scale, 0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.01f, 8);
+		alienFightScene(center, scale, 0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.01f, 8);
 	}
 
 	else if(mode == 7)
@@ -314,113 +314,149 @@ void Scene::groundScene(glm::vec3 position, glm::vec3 scale, float rotationAngle
 	drawableObjects_.push_back(std::move(groundObject));
 }
 
-void Scene::planetsScene(glm::vec3 position, glm::vec3 scale, float rotationAngle, glm::vec3 rotationAxis, float rotationSpeed, int shaderIndex)
+void Scene::sunScene(glm::vec3 position, glm::vec3 scale, float rotationAngle, glm::vec3 rotationAxis, float rotationSpeed, int shaderIndex)
 {
 	static std::vector<float> sunData(sun, sun + sizeof(sun) / sizeof(float));
-	static std::vector<float> earthData(earth, earth + sizeof(earth) / sizeof(float));
-	static std::vector<float> moonData(moon, moon + sizeof(moon) / sizeof(float));
-
 	static Model sunModel(sunData, static_cast<int>(sunData.size() / 9), GL_TRIANGLES);
+
+	auto sunObj = std::make_unique<DrawableObject>(*shaderPrograms_[shaderIndex], sunModel);
+	auto comp = std::make_shared<TransformationComposite>();
+
+	comp->addTransformation(std::make_shared<Translate>(position));
+	if (rotationSpeed != 0.0f || rotationAngle != 0.0f)
+		comp->addTransformation(std::make_shared<Rotate>(rotationAngle, rotationAxis, rotationSpeed));
+	comp->addTransformation(std::make_shared<Scale>(scale));
+
+	sunObj->setTransformation(comp);
+	drawableObjects_.push_back(std::move(sunObj));
+}
+
+void Scene::earthScene(glm::vec3 position, glm::vec3 scale, float rotationAngle, glm::vec3 rotationAxis, float rotationSpeed, int shaderIndex, std::shared_ptr<TransformationComposite> parentTransform)
+{
+	static std::vector<float> earthData(earth, earth + sizeof(earth) / sizeof(float));
 	static Model earthModel(earthData, static_cast<int>(earthData.size() / 9), GL_TRIANGLES);
+
+	auto earthObj = std::make_unique<DrawableObject>(*shaderPrograms_[shaderIndex], earthModel);
+	auto comp = std::make_shared<TransformationComposite>();
+
+	if (parentTransform)
+		comp->addTransformation(parentTransform);
+
+	comp->addTransformation(std::make_shared<Translate>(position));
+	if (rotationSpeed != 0.0f || rotationAngle != 0.0f)
+		comp->addTransformation(std::make_shared<Rotate>(rotationAngle, rotationAxis, rotationSpeed));
+	comp->addTransformation(std::make_shared<Scale>(scale));
+
+	earthObj->setTransformation(comp);
+	drawableObjects_.push_back(std::move(earthObj));
+}
+
+void Scene::moonScene(glm::vec3 position, glm::vec3 scale, float rotationAngle, glm::vec3 rotationAxis, float rotationSpeed, int shaderIndex, std::shared_ptr<TransformationComposite> parentTransform)
+{
+	static std::vector<float> moonData(moon, moon + sizeof(moon) / sizeof(float));
 	static Model moonModel(moonData, static_cast<int>(moonData.size() / 9), GL_TRIANGLES);
 
-	auto earthRotation = std::make_shared<Rotate>(rotationAngle, rotationAxis, 0.01f);
-	earthRotation->setRotationDirection(1);
-	auto earthDistTrans = std::make_shared<Translate>(glm::vec3(0.6f * scale.x, 0.0f, 0.0f));
+	auto moonObj = std::make_unique<DrawableObject>(*shaderPrograms_[shaderIndex], moonModel);
+	auto comp = std::make_shared<TransformationComposite>();
 
-	auto moonRotation = std::make_shared<Rotate>(rotationAngle, rotationAxis, 0.03f);
-	moonRotation->setRotationDirection(1);
-	auto moonDistTrans = std::make_shared<Translate>(glm::vec3(0.15f * scale.x, 0.0f, 0.0f));
+	if (parentTransform)
+		comp->addTransformation(parentTransform);
 
-	auto axisRotation = std::make_shared<Rotate>(rotationAngle, rotationAxis, rotationSpeed);
-	axisRotation->setRotationDirection(1);
+	comp->addTransformation(std::make_shared<Translate>(position));
+	if (rotationSpeed != 0.0f || rotationAngle != 0.0f)
+		comp->addTransformation(std::make_shared<Rotate>(rotationAngle, rotationAxis, rotationSpeed));
+	comp->addTransformation(std::make_shared<Scale>(scale));
 
-	// 1. Sun
-	auto sunObj = std::make_unique<DrawableObject>(*shaderPrograms_[6], sunModel);
-	auto sunTrans = std::make_shared<TransformationComposite>();
-	sunTrans->addTransformation(std::make_shared<Translate>(position));
-	sunTrans->addTransformation(std::make_shared<Scale>(glm::vec3(0.2f) * scale));
-	sunTrans->addTransformation(axisRotation);
-	sunObj->setTransformation(sunTrans);
-	drawableObjects_.push_back(std::move(sunObj));
-
-	// 2. Earth
-	auto earthObj = std::make_unique<DrawableObject>(*shaderPrograms_[8], earthModel);
-	auto earthTrans = std::make_shared<TransformationComposite>();
-	earthTrans->addTransformation(std::make_shared<Translate>(position));
-	earthTrans->addTransformation(earthRotation);
-	earthTrans->addTransformation(earthDistTrans);
-	earthTrans->addTransformation(std::make_shared<Scale>(glm::vec3(0.1f) * scale));
-	earthTrans->addTransformation(axisRotation);
-	earthObj->setTransformation(earthTrans);
-	drawableObjects_.push_back(std::move(earthObj));
-
-	// 3. Moon
-	auto moonObj = std::make_unique<DrawableObject>(*shaderPrograms_[9], moonModel);
-	auto moonTrans = std::make_shared<TransformationComposite>();
-	moonTrans->addTransformation(std::make_shared<Translate>(position));
-	moonTrans->addTransformation(earthRotation);
-	moonTrans->addTransformation(earthDistTrans);
-	moonTrans->addTransformation(moonRotation);
-	moonTrans->addTransformation(moonDistTrans);
-	moonTrans->addTransformation(std::make_shared<Scale>(glm::vec3(0.02f) * scale));
-	moonTrans->addTransformation(axisRotation);
-	moonObj->setTransformation(moonTrans);
+	moonObj->setTransformation(comp);
 	drawableObjects_.push_back(std::move(moonObj));
 }
 
-void Scene::alienScene(glm::vec3 position, glm::vec3 scale, float rotationAngle, glm::vec3 rotationAxis, float rotationSpeed, int shaderIndex)
+void Scene::alienScene(glm::vec3 position, glm::vec3 scale, float rotationAngle, glm::vec3 rotationAxis, float rotationSpeed, int shaderIndex, std::shared_ptr<TransformationComposite> parentTransform)
 {
 	static std::vector<float> alienData(octopus, octopus + sizeof(octopus) / sizeof(float));
 	static Model alienModel(alienData, static_cast<int>(alienData.size() / 9), GL_TRIANGLES);
+
+	auto alienObj = std::make_unique<DrawableObject>(*shaderPrograms_[shaderIndex], alienModel);
+	auto comp = std::make_shared<TransformationComposite>();
+
+	if (parentTransform)
+		comp->addTransformation(parentTransform);
+
+	comp->addTransformation(std::make_shared<Translate>(position));
+	if (rotationSpeed != 0.0f || rotationAngle != 0.0f)
+		comp->addTransformation(std::make_shared<Rotate>(rotationAngle, rotationAxis, rotationSpeed));
+
+	comp->addTransformation(std::make_shared<Rotate>(-glm::half_pi<float>(), glm::vec3(1.0f, 0.0f, 0.0f), 0.0f));
+	comp->addTransformation(std::make_shared<Scale>(scale));
+
+	alienObj->setTransformation(comp);
+	drawableObjects_.push_back(std::move(alienObj));
+}
+
+void Scene::spaceGunScene(glm::vec3 position, glm::vec3 scale, float rotationAngle, glm::vec3 rotationAxis, float rotationSpeed, int shaderIndex, std::shared_ptr<TransformationComposite> parentTransform)
+{
 	static std::vector<float> spaceGunData(space_gun, space_gun + sizeof(space_gun) / sizeof(float));
 	static Model spaceGunModel(spaceGunData, static_cast<int>(spaceGunData.size() / 9), GL_TRIANGLES);
 
-	auto alienOrbitRotation = std::make_shared<Rotate>(rotationAngle, rotationAxis, 0.005f);
-	alienOrbitRotation->setRotationDirection(1);
-	auto alienOrbitDist = std::make_shared<Translate>(glm::vec3(3.0f * scale.x, 0.0f, 0.0f));
-
-	//octopus self rotation
-	auto alienSelfRotation = std::make_shared<Rotate>(rotationAngle, rotationAxis, rotationSpeed);
-	alienSelfRotation->setRotationDirection(1);
-
-	// rotation of the gun around the alien
-	auto gunOrbitRotation = std::make_shared<Rotate>(rotationAngle, rotationAxis, 0.025f);
-	gunOrbitRotation->setRotationDirection(1);
-	auto gunOrbitDist = std::make_shared<Translate>(glm::vec3(1.0f * scale.x, 0.3f, 0.0f));
-
-	// gun rotation around its own axis
-	auto gunSelfRotation = std::make_shared<Rotate>(glm::pi<float>() + rotationAngle, rotationAxis, rotationSpeed * 2.0f);
-	gunSelfRotation->setRotationDirection(1);
-
-
-	auto alienObj = std::make_unique<DrawableObject>(*shaderPrograms_[shaderIndex], alienModel);
-	auto alienComposite = std::make_shared<TransformationComposite>();
-
-	alienComposite->addTransformation(std::make_shared<Translate>(position)); 
-	alienComposite->addTransformation(alienOrbitRotation);
-	alienComposite->addTransformation(alienOrbitDist);
-	alienComposite->addTransformation(alienSelfRotation); 
-
-	alienComposite->addTransformation(std::make_shared<Rotate>(-glm::half_pi<float>(), glm::vec3(1.0f, 0.0f, 0.0f), 0.0f));
-	alienComposite->addTransformation(std::make_shared<Scale>(glm::vec3(0.7f) * scale));
-
-	alienObj->setTransformation(alienComposite);
-	drawableObjects_.push_back(std::move(alienObj));
-
 	auto spaceGunObj = std::make_unique<DrawableObject>(*shaderPrograms_[shaderIndex], spaceGunModel);
-	auto gunComposite = std::make_shared<TransformationComposite>();
+	auto comp = std::make_shared<TransformationComposite>();
 
-	gunComposite->addTransformation(std::make_shared<Translate>(position));
-	gunComposite->addTransformation(alienOrbitRotation);
-	gunComposite->addTransformation(alienOrbitDist);
-	gunComposite->addTransformation(gunOrbitRotation); 
-	gunComposite->addTransformation(gunOrbitDist);
-	gunComposite->addTransformation(gunSelfRotation);
-	gunComposite->addTransformation(std::make_shared<Scale>(glm::vec3(0.12f) * scale));
+	if (parentTransform)
+		comp->addTransformation(parentTransform);
 
-	spaceGunObj->setTransformation(gunComposite);
+	comp->addTransformation(std::make_shared<Translate>(position));
+	if (rotationSpeed != 0.0f || rotationAngle != 0.0f)
+		comp->addTransformation(std::make_shared<Rotate>(rotationAngle, rotationAxis, rotationSpeed));
+	comp->addTransformation(std::make_shared<Scale>(scale));
+
+	spaceGunObj->setTransformation(comp);
 	drawableObjects_.push_back(std::move(spaceGunObj));
+}
+
+
+void Scene::planetsScene(glm::vec3 position, glm::vec3 scale, float rotationAngle, glm::vec3 rotationAxis, float rotationSpeed, int shaderIndex)
+{
+	sunScene(position, glm::vec3(0.6f), 0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.01f, 6);
+
+
+	auto earthOrbitRot = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.01f);
+	earthOrbitRot->setRotationDirection(1);
+	auto earthOrbitTrans = std::make_shared<TransformationComposite>();
+	earthOrbitTrans->addTransformation(std::make_shared<Translate>(position));
+	earthOrbitTrans->addTransformation(earthOrbitRot);
+
+
+	earthScene(glm::vec3(0.6f * scale.x, 0.0f, 0.0f), glm::vec3(0.3f), 0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.02f, 8, earthOrbitTrans);
+
+
+	auto moonOrbitRot = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.04f);
+	moonOrbitRot->setRotationDirection(1);
+	auto moonOrbitTrans = std::make_shared<TransformationComposite>();
+	moonOrbitTrans->addTransformation(earthOrbitTrans);
+	moonOrbitTrans->addTransformation(std::make_shared<Translate>(glm::vec3(0.6f * scale.x, 0.0f, 0.0f)));
+	moonOrbitTrans->addTransformation(moonOrbitRot);
+
+
+	moonScene(glm::vec3(0.15f * scale.x, 0.0f, 0.0f), glm::vec3(0.06f), 0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.02f, 9, moonOrbitTrans);
+}
+
+void Scene::alienFightScene(glm::vec3 position, glm::vec3 scale, float rotationAngle, glm::vec3 rotationAxis, float rotationSpeed, int shaderIndex)
+{
+	auto alienOrbitRot = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.005f);
+	alienOrbitRot->setRotationDirection(1);
+	auto alienOrbitTrans = std::make_shared<TransformationComposite>();
+	alienOrbitTrans->addTransformation(std::make_shared<Translate>(position));
+	alienOrbitTrans->addTransformation(alienOrbitRot);
+
+	alienScene(glm::vec3(3.0f * scale.x, 0.0f, 0.0f), glm::vec3(0.7f) * scale, 0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.01f, 8, alienOrbitTrans);
+	auto gunOrbitRot = std::make_shared<Rotate>(0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.025f);
+	gunOrbitRot->setRotationDirection(1);
+	auto gunOrbitTrans = std::make_shared<TransformationComposite>();
+	gunOrbitTrans->addTransformation(alienOrbitTrans);
+	gunOrbitTrans->addTransformation(std::make_shared<Translate>(glm::vec3(3.0f * scale.x, 0.0f, 0.0f)));
+	gunOrbitTrans->addTransformation(gunOrbitRot);
+
+	spaceGunScene(glm::vec3(1.0f * scale.x, 0.3f, 0.0f), glm::vec3(0.12f) * scale, glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f), 0.02f, 8, gunOrbitTrans);
 
 }
 

@@ -15,7 +15,7 @@
 
 class DrawableObject;
 class ShaderProgram;
-
+class TransformationComposite;
 
 class Scene
 {
@@ -91,19 +91,37 @@ public:
         float rotationSpeed = 0.0f,
         int shaderIndex = 5);
 
-    void planetsScene(glm::vec3 position = glm::vec3(0.0f),
-        glm::vec3 scale = glm::vec3(1.0f),
-        float rotationAngle = 0.0f,
-        glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),
-        float rotationSpeed = 0.05f,
-        int shaderIndex = 6);
+    void sunScene(glm::vec3 position = glm::vec3(0.0f), glm::vec3 scale = glm::vec3(1.0f),
+        float rotationAngle = 0.0f, glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),
+        float rotationSpeed = 0.0f, int shaderIndex = 6);
 
-	void alienScene(glm::vec3 position = glm::vec3(0.0f),
-		glm::vec3 scale = glm::vec3(1.0f),
-		float rotationAngle = 0.0f,
-		glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),
-		float rotationSpeed = 0.05f,
-		int shaderIndex = 6);
+    void earthScene(glm::vec3 position = glm::vec3(0.0f), glm::vec3 scale = glm::vec3(1.0f),
+        float rotationAngle = 0.0f, glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),
+        float rotationSpeed = 0.0f, int shaderIndex = 8,
+        std::shared_ptr<TransformationComposite> parentTransform = nullptr);
+
+    void moonScene(glm::vec3 position = glm::vec3(0.0f), glm::vec3 scale = glm::vec3(1.0f),
+        float rotationAngle = 0.0f, glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),
+        float rotationSpeed = 0.0f, int shaderIndex = 9,
+        std::shared_ptr<TransformationComposite> parentTransform = nullptr);
+
+    void alienScene(glm::vec3 position = glm::vec3(0.0f), glm::vec3 scale = glm::vec3(1.0f),
+        float rotationAngle = 0.0f, glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),
+        float rotationSpeed = 0.0f, int shaderIndex = 8,
+        std::shared_ptr<TransformationComposite> parentTransform = nullptr);
+
+    void spaceGunScene(glm::vec3 position = glm::vec3(0.0f), glm::vec3 scale = glm::vec3(1.0f),
+        float rotationAngle = 0.0f, glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),
+        float rotationSpeed = 0.0f, int shaderIndex = 8,
+        std::shared_ptr<TransformationComposite> parentTransform = nullptr);
+
+	void planetsScene(glm::vec3 position = glm::vec3(0.0f), glm::vec3 scale = glm::vec3(1.0f),
+		float rotationAngle = 0.0f, glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),
+		float rotationSpeed = 0.0f, int shaderIndex = 8);
+
+    void alienFightScene(glm::vec3 position = glm::vec3(0.0f), glm::vec3 scale = glm::vec3(1.0f),
+        float rotationAngle = 0.0f, glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f),
+        float rotationSpeed = 0.0f, int shaderIndex = 8);
 
 private:
 	std::vector<std::unique_ptr<ShaderProgram>> shaderPrograms_;

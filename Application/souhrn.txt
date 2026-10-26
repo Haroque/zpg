@@ -1,19 +1,22 @@
-1. Splněno - V třídě Camera se počítá pohledová matice pomocí glm::lookAt(eye, eye + target, up) a projekční pomocí glm::perspective.
-            Posílá se viewMatrix a projectionMatrix do shaderů.
+1. Splněno - všechny mají společný vertex shader (basic.vert)
+    a) Konstatní(ambient.frag)I = ambientLight * vertexColor, v ambient.frag, předává intenzitu světla jako uniformní proměnnou ambientLight. Vykresluje rovnoměrně nezávisle na pozici.
+    b) Lambert(diffuse.frag) modeluje matný povrch, k ambientní složce přičítá, předává pozici světla (lightPosition), barvu světla (lightColor), a intenzitu světla (ambientLight) jako uniformní proměnné 
+        1. Ze souřadnic worldPosition a lightPosition se spočítá směr ke světlu normalize(lightPosition - worldPosition).
+        Spočítá se skalární součin max(normal*lightDir,0) udávající intenzitu dopadajícího světla.
+        Difúzní složka se sečte se základní ambientní složkou (ambient + diffuse).
 
-2. Splněno - Nyní se lze po lese pohybovat pomosí wsad (keyCallback()) a předávají se kameře, pohybuje se pomocích kolmých vektorů.
-            Rozhlížení myší v cursorPosCallback(), kamera se otáčí na rozdílu pozic Y = xpos - lastMouseX, Y = ypos - lastMouseY.
-            V tree.vert se odděluje na základě vrcholů a vykresluje se barva, odstíny se řeší získáním desetinného čísla pozicové části matice.
+    c) Phong(phong.frag) K ambientu a difúzi přidává ostrý zrcadlový odlesk počítaný z vektoru odrazu světla. Přidává další uniformní proměnné pozici kamery a míru odlesku(shininess)
+        Ze normalize(cameraPosition -worldPosition) se spočítá pohledový vektor. pomocí reflect se získá vektor odrazu, ten se umocní -> shininess
+    
+    d) Blinn-Phong(blinn-phong.frag) Neřeší se vektor odrazu, ale poloviční vektor mezi směrem ke světlu a kameře. 
+        Odlesk se počítá ze skalárního součinu normály a polovičního vektoru.
 
+2.
+    a) Na slunce byl použitý ambient.frag, speciálně pro tento shader byla ambientLight nastavena na plnou svítivost (1.0, 1.0, 1.0)
+    b) Na Zemi byl aplikován Phong a na Měsíc Blinn-Phong. Oba reagují na bodové světlo v [0, 0, 0]
+    c) Do scény pomocí AI byly přidány modely space_gun a octopus stáhnuté ze stránky Sketchfab. Na oba byl použit Phongův shader.
+        pozn.  V Model.cpp byla vyřešena detekce uspořádání 9-floatových dat, protože planety měly v paměti pořadí [position, color, normal], zatímco hodiny [position, normal, color].
 
-3. Splněno - Model hodin je vykreslen jedním voláním glDrawArrays(drawMode_, 0, vertexCount_) v Model::draw(). 
-            Ve vertex shaderu clock.vert se podle barvy vrcholů vertexColorIn rozlišují ručičky a logo: zelená (G > 0.5, R < 0.3) 
-            pro minuty s úhlem minAngle, modrá (B > 0.5, R < 0.3) pro hodiny s hourAngle, červená (R > 0.5, G < 0.3) pro vteřiny se secAngle 
-            a žlutá pro logo přebarvené na (vec3(5.0/255.0, 195.0/255.0, 222.0/255.0)). Rotace ručiček v rovině X-Y se provádí pomocí 2D matice mat2(c, s, -s, c), ciferník zůstává statický.
-
-4. Splněno - Do lesa byli přidány 2 modely hodin, login, scéna s planetami a model hlíny, vygenerovaný pomocí AI.
-            Aby nedošlo k zploštění hodin do elipsy, je použito díky TransformationComposite použito rovnoměrné škálování. 
-            |s_x| = |-0.5 * baseScale| = 0.5 * baseScale, s_y = 0.5 * baseScale, s_z = 0.5 * baseScale 
-
-5. Splněno - Byla vytvořena třída Observer, ze kterého dědí ShaderProgram a třída Subject, ze které dědí Camera.
-            Na všechny shadery se připojí kamera attach(), pokud se kamera pohne, pomocí notifyAll() se updatuje.
+3. Byly vytvořeny 4 modely sphere rozmístěné kolem středu [0, 0, 0] (na pozicích [-3, 0, 0], [0, 3, 0], [3, 0, 0] a [0, -3, 0]) s bod světlem v [0, 0, 0]
+    a) Při změně rozměrů okna windowResize(width, height) nastaví glViewport(0, 0, width, height) a aspect = width/height.
+        kamera pak přepočítá projectionMatrix -> aktualizace se rozesílají díky Observer
